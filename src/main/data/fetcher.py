@@ -10,7 +10,7 @@ from src.main.data.card import Card
 
 import requests
 
-from src.main.info.info import show_info, INFO_MODE
+from src.main.info.info import show_info, Info_Mode
 
 
 class Fetcher(ABC):
@@ -47,7 +47,7 @@ class ScryfallFetcher(Fetcher):
             response = requests.get(API_URL + "/cards/" + urllib.parse.quote(dictionary["id"]))
         elif "cn" in dictionary:
             if "set" not in dictionary:
-                show_info("Set not provided", prefix=dictionary.get("name", "Unknown"), mode=INFO_MODE.error)
+                show_info("Set not provided", prefix=dictionary.get("name", "Unknown"), mode=Info_Mode.ERROR)
                 return None
 
             response = requests.get(
@@ -62,7 +62,7 @@ class ScryfallFetcher(Fetcher):
                 API_URL + "/cards/named?exact=" + urllib.parse.quote(dictionary["name"]))
 
         if response.status_code != 200:
-            show_info("Could not fetch card", prefix=dictionary.get("name", "Unknown"), mode=INFO_MODE.error)
+            show_info("Could not fetch card", prefix=dictionary.get("name", "Unknown"), mode=Info_Mode.ERROR)
             return None
 
         return Card.generate(json.loads(response.text))
