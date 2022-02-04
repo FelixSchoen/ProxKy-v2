@@ -12,7 +12,7 @@ class Info_Mode:
 
 
 def show_info(message: str, prefix: str = "ProxKy", mode: Info_Mode = Info_Mode.NORMAL, normalize_length=50,
-              end_line=True) -> None:
+              end_line=False) -> None:
     """
     Prints info message to terminal.
     :param end_line: If the line should be ended with a newline character

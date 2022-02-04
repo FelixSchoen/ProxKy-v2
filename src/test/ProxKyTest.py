@@ -1,6 +1,7 @@
 import unittest
 
 from src.main.data.fetcher import ScryfallFetcher
+from src.main.pipeline import parse_card_list, process_card
 
 VARIETY_CARDS = ["Black Lotus",
                  "Clearwater Pathway",
@@ -22,5 +23,17 @@ class FetcherTest(unittest.TestCase):
             dictionary = dict()
             dictionary["name"] = card_name
             card = fetcher.fetch_card(dictionary)
-            print(card.name)
             self.assertTrue(card_name in card.name)
+
+
+class PipelineTest(unittest.TestCase):
+
+    def test_parse_card_list(self):
+        card_list = parse_card_list("resources/test_decklist.txt")
+        self.assertTrue(len(card_list) == len(VARIETY_CARDS))
+
+    def test_process_card(self):
+        fetcher = ScryfallFetcher()
+        card = fetcher.fetch_card({"name": "Black Lotus"})
+        process_card(card)
+        self.assertTrue(card is not None)

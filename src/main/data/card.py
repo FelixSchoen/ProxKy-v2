@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from src.main.configuration.variables import DOUBLE_SIDED_LAYOUTS, Faces
+import re
+
+from src.main.configuration.variables import DOUBLE_SIDED_LAYOUTS, Faces, Regex
+from src.main.utils.mtg import get_color_array
 
 
 class Card:
@@ -35,7 +38,7 @@ class Card:
         self.flavor_text = None
         self.image_uris = None
         self.rarity = None
-        self.set_name = None
+        self.set = None
 
         # Additional Fields
         self.component = None
@@ -71,7 +74,7 @@ class Card:
         card.flavor_text = args.get("flavor_text")
         card.image_uris = args.get("image_uris", [])
         card.rarity = args.get("rarity")
-        card.set_name = args.get("set_name")
+        card.set = args.get("set")
 
         card.component = args.get("component")
 
@@ -116,7 +119,24 @@ class Card:
 
             # Fill fields
             if len(face.colors) == 0:
-                pass
+                if self.layout in ["split", "adventure"]:
+                    face.colors.extend(get_color_array(face.mana_cost))
+
+            if len(face.produced_mana) == 0:
+                # Find all instances of {X}: Add {Y}
+                matches = re.finditer(Regex.ADD_MANA, face.oracle_text)
+                colors = []
+
+                # For each occurrence, add to produced mana
+                for match in matches:
+                    produced_mana = match.group("prod")
+                    color_matches = re.finditer(Regex.MANA, produced_mana)
+
+                    for color_match in color_matches:
+                        colors.append(color_match.group("mana"))
+
+                # Sort and format mana
+                face.produced_mana = get_color_array(colors)
 
             if face.artist is None:
                 face.artist = self.artist
@@ -130,5 +150,5 @@ class Card:
             if face.rarity is None:
                 face.rarity = self.rarity
 
-            if face.set_name is None:
-                face.set_name = self.set_name
+            if face.set is None:
+                face.set = self.set

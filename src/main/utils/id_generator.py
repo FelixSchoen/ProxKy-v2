@@ -1,6 +1,6 @@
 import shutil
-import xml.etree.ElementTree
 import zipfile
+from xml.etree import ElementTree
 
 from src.main.configuration.config import CONFIG_PATH_ID_FILE, CONFIG_FRONT_ID, CONFIG_BACK_ID, CONFIG_PRINT_FRONT_ID, \
     CONFIG_PRINT_BACK_ID
@@ -43,12 +43,12 @@ def _fetch_ids(name, spread, root_element, mode="standard") -> None:
     tree, base_tree = None, None
 
     if mode != "printing":
-        tree = xml.etree.ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread + ".xml")
+        tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread + ".xml")
         base_tree = tree
         if root_element is not None:
             tree = tree.find(".//*[@Name='" + root_element + "']")
     else:
-        tree = xml.etree.ElementTree.parse(Paths.WORKING_MEMORY_PRINT + "/Spreads/Spread_" + spread + ".xml")
+        tree = ElementTree.parse(Paths.WORKING_MEMORY_PRINT + "/Spreads/Spread_" + spread + ".xml")
 
     # Ids base case
     names_base = [

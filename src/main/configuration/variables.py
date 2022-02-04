@@ -5,6 +5,10 @@ import requests
 from src.main.configuration.config import CONFIG_ROOT_FOLDER, API_URL
 
 
+class Fonts:
+    TITLE = {"font": "Beleren2016", "size": "8", "style": "Bold"}
+
+
 class Ids:
     SPREAD = "id_spread"
 
@@ -123,7 +127,7 @@ class Id_Names:
 
 
 class Id_Sets:
-    id_general_front = {
+    ID_SET_FRONT = {
         "id_spread": "uce",
         "id_group_normal_o": "u505",
         "id_group_header_o": "u3f9",
@@ -158,7 +162,7 @@ class Id_Sets:
         "id_planeswalker_oracle_final_t": "u4ef",
         "id_planeswalker_oracle_final_o": "u4ec",
     }
-    id_general_split_top_front = {
+    ID_SET_SPLIT_TOP_FRONT = {
         "id_spread": "uce",
         "id_group_normal_o": "u152c",
         "id_group_header_o": "u16ef",
@@ -181,7 +185,7 @@ class Id_Sets:
         "id_artwork_o": "u152f",
         "id_backdrop_o": "u1530",
     }
-    id_general_split_bot_front = {
+    ID_SET_SPLIT_BOT_FRONT = {
         "id_spread": "uce",
         "id_group_normal_o": "u1768",
         "id_group_header_o": "u17e2",
@@ -204,7 +208,7 @@ class Id_Sets:
         "id_artwork_o": "u176a",
         "id_backdrop_o": "u176b",
     }
-    id_general_front_adventure = {
+    ID_SET_FRONT_ADVENTURE = {
         "id_spread": "uce",
         "id_type_icon_o": "u3d8",
         "id_title_t": "u3c4",
@@ -217,7 +221,7 @@ class Id_Sets:
         "id_adventure_oracle_right_t": "u107e",
         "id_adventure_oracle_right_o": "u107b",
     }
-    id_general_back = {
+    ID_SET_BACK = {
         "id_spread": "u4122",
         "id_group_normal_o": "u42b3",
         "id_group_header_o": "u4477",
@@ -252,11 +256,11 @@ class Id_Sets:
         "id_planeswalker_oracle_final_t": "u437b",
         "id_planeswalker_oracle_final_o": "u4377",
     }
-    id_general_print_front = {
+    ID_SET_PRINT_FRONT = {
         "id_spread": "ue7",
         "pid_frame_o": ['uf5', 'u114', 'u115', 'u119', 'u118', 'u117', 'u11c', 'u11b'],
     }
-    id_general_print_back = {
+    ID_SET_PRINT_BACK = {
         "id_spread": "u16c",
         "pid_frame_o": ['u17d', 'u17c', 'u17b', 'u17a', 'u179', 'u178', 'u177', 'u176'],
     }
