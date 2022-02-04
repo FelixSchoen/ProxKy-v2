@@ -1,9 +1,9 @@
 # The root folder
 CONFIG_ROOT_FOLDER = "D:/Games/Magic/ProxKy/v3"
 # Whether to print reminder text (this is reminder text)
-CONFIG_PRINT_REMINDER_TEXT = True  # TODO Not implemented
+CONFIG_PRINT_REMINDER_TEXT = True
 # Whether to print flavor text (flavor text is stuff like lore, ...)
-CONFIG_PRINT_FLAVOR_TEXT = True  # TODO
+CONFIG_PRINT_FLAVOR_TEXT = True
 # Which fetcher to use
 CONFIG_CARD_DATA_FETCHER = "scryfall"
 

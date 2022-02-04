@@ -6,7 +6,15 @@ from src.main.configuration.config import CONFIG_ROOT_FOLDER, API_URL
 
 
 class Fonts:
+    MANA_COST = {"font": "KyMana", "size": "10", "style": "Regular", "leading": "8"}
+    META = {"font": "Helvetica Now Var", "size": "4.5", "style": "Display"}
+    ORACLE_REGULAR = {"font": "Plantin MT Pro", "size": "8", "style": "Regular"}
+    ORACLE_MANA = {"font": "KyMana", "size": "8", "style": "Regular"}
+    ORACLE_REMINDER = {"font": "Plantin MT Pro", "size": "8", "style": "Italic"}
+    ORACLE_FLAVOR = {"font": "Plantin MT Pro", "size": "8", "style": "Italic"}
     TITLE = {"font": "Beleren2016", "size": "8", "style": "Bold"}
+    TYPE_LINE = {"font": "Helvetica Now Var", "size": "6", "style": "Display"}
+    VALUE = {"font": "Beleren2016", "size": "10", "style": "Bold"}
 
 
 class Ids:
@@ -310,15 +318,16 @@ class Regex:
     MANA = r"(?P<match>{(?P<mana>[A-Z0-9\/◄►]+)})"
     ADD_MANA = r"(?P<match>(?P<req>(?:{[A-Z0-9\/]+})+)+: Add (?P<prod>(?:{(?:[A-Z0-9\/]+)})+))"
 
-    TEMPLATE_MANA = [([MANA], "font", ("KyMana", ""))]
+    TEMPLATE_MANA = [([MANA], "mana")]
     TEMPLATE_REGULAR = TEMPLATE_MANA.copy()
     TEMPLATE_REGULAR.append(
-        ([r" ?\(.+\)"], "type", "reminder"))
+        ([r" ?\(.+\)"], "reminder"))
     TEMPLATE_ORACLE = TEMPLATE_REGULAR.copy()
     TEMPLATE_ORACLE.append(
-        (Magic.KEYWORDS, "font", ("Plantin MT Pro", "Italic")))
-    TEMPLATE_PLANESWALKER = [([r"[\+|−]?(?:\d+|X): "], "type", "loyalty")]
-    TEMPLATE_FLAVOR = [([r"\*(?:.)+\*"], "type", "normal")]
+        (Magic.KEYWORDS, "keyword"))
+    TEMPLATE_PLANESWALKER = [([r"[\+|−]?(?:\d+|X): "], "loyalty")]
+    TEMPLATE_FLAVOR = [([r"\*(?:.)+\*"], "normal")]
+    TEMPLATE_BREAK = [("\n", "break")]
 
     LEVELER = r"[\"LEVEL [\d]+(-[\d]+|\+)\\n([\d]+|\*)/([\d]+|\*)\"]"
     NEWLINE = r"\n"
