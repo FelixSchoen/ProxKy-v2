@@ -5,7 +5,7 @@ import zipfile
 
 from src.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, DOUBLE_SIDED_LAYOUTS
 from src.main.data.card import Card
-from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced
+from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic
 from src.main.info.info import show_info, Info_Mode
 from src.main.utils.mtg import get_clean_name, get_card_types
 from src.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
@@ -73,6 +73,8 @@ def process_card(card: Card, options: dict = None) -> None:
     # Layouts
     if card.layout not in DOUBLE_SIDED_LAYOUTS:
         layout_single_faced(Id_Sets.ID_SET_BACK)
+    if "Basic" in get_card_types(card):
+        layout_basic(Id_Sets.ID_SET_FRONT)
 
     if card.layout in ["normal", "class", "saga"]:
         process_face(card, Id_Sets.ID_SET_FRONT)
@@ -81,6 +83,10 @@ def process_card(card: Card, options: dict = None) -> None:
         set_modal(card, [Id_Sets.ID_SET_FRONT, Id_Sets.ID_SET_BACK])
         process_face(card.card_faces[0], Id_Sets.ID_SET_FRONT)
         process_face(card.card_faces[1], Id_Sets.ID_SET_BACK)
+    elif card.layout in ["split", "flip"]:
+        layout_split(Id_Sets.ID_SET_FRONT)
+        process_face(card.card_faces[0], Id_Sets.ID_SET_SPLIT_TOP_FRONT)
+        process_face(card.card_faces[1], Id_Sets.ID_SET_SPLIT_BOT_FRONT)
 
     shutil.make_archive(path_file, "zip", Paths.WORKING_MEMORY_CARD)
     try:

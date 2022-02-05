@@ -91,9 +91,11 @@ def set_card_name(card: Card, id_set: dict) -> None:
     content_dict.update(Fonts.TITLE)
     set_text_field(id_set[Ids.TITLE_T], [([content_dict], None)])
 
-    content_dict = {"content": card.name}
-    content_dict.update(Fonts.NAME)
-    set_text_field(id_set[Ids.NAME_T], [([content_dict], {"justification": "CenterAlign"})])
+    # Check for e.g. split cards
+    if Ids.NAME_T in id_set:
+        content_dict = {"content": card.name}
+        content_dict.update(Fonts.NAME)
+        set_text_field(id_set[Ids.NAME_T], [([content_dict], {"justification": "CenterAlign"})])
 
 
 def set_type_line(card: Card, id_set: dict) -> None:

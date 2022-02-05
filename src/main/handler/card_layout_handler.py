@@ -1,7 +1,7 @@
 import os
 
 from src.main.configuration.variables import Ids, Paths, Distances
-from src.main.handler.xml_handler import set_visibility, get_coordinates, set_coordinates
+from src.main.handler.xml_handler import set_visibility, get_coordinates, set_coordinates, move
 
 
 def layout_single_faced(id_set: dict):
@@ -30,6 +30,34 @@ def layout_double_faced(id_sets: [dict]):
                                                                    (coordinates[1][0], coordinates[1][1] + shift),
                                                                    (coordinates[2][0], coordinates[2][1]),
                                                                    (coordinates[3][0], coordinates[3][1])])
+
+
+def layout_split(id_set: dict):
+    set_visibility(id_set[Ids.GROUP_NORMAL_O], id_set[Ids.SPREAD], False)
+    set_visibility(id_set[Ids.GROUP_SPLIT_O], id_set[Ids.SPREAD], True)
+
+
+def layout_basic(id_set: dict):
+    set_visibility(id_set[Ids.ORACLE_O], id_set[Ids.SPREAD], False)
+    set_visibility(id_set[Ids.COLOR_INDICATOR_TOP_O], id_set[Ids.SPREAD], False)
+
+    coordinates_artwork = get_coordinates(id_set[Ids.ARTWORK_O], id_set[Ids.SPREAD])
+    set_coordinates(id_set[Ids.ARTWORK_O], id_set[Ids.SPREAD],
+                    [(coordinates_artwork[0][0], coordinates_artwork[0][1]),
+                     (coordinates_artwork[1][0], coordinates_artwork[1][1]),
+                     (coordinates_artwork[2][0], coordinates_artwork[2][
+                         1] + Distances.LAYOUT_BASIC_SHIFT),
+                     (coordinates_artwork[3][0], coordinates_artwork[3][
+                         1] + Distances.LAYOUT_BASIC_SHIFT)])
+
+    coordinates_backdrop = get_coordinates(id_set[Ids.BACKDROP_O], id_set[Ids.SPREAD])
+    set_coordinates(id_set[Ids.BACKDROP_O], id_set[Ids.SPREAD],
+                    [(coordinates_backdrop[0][0], coordinates_backdrop[0][1] + Distances.LAYOUT_BASIC_SHIFT),
+                     (coordinates_backdrop[1][0], coordinates_backdrop[1][1] + Distances.LAYOUT_BASIC_SHIFT),
+                     (coordinates_backdrop[2][0], coordinates_backdrop[2][1]),
+                     (coordinates_backdrop[3][0], coordinates_backdrop[3][1])])
+
+    move(id_set[Ids.GROUP_HEADER_O], id_set[Ids.SPREAD], (0, Distances.LAYOUT_BASIC_SHIFT))
 
 
 def layout_planeswalker(id_set: dict):

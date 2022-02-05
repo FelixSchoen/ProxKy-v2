@@ -268,6 +268,19 @@ def set_coordinates(object_id: str, spread_id: str,
     tree.write(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
 
 
+def move(object_id: str, spread_id: str,
+         move_by: (int, int)):
+    tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
+    xml_object = tree.find(".//*[@Self='" + object_id + "']")
+
+    coordinates = xml_object.attrib["ItemTransform"].split(" ")
+    xml_object.set("ItemTransform",
+                   coordinates[0] + " " + coordinates[1] + " " + coordinates[2] + " " + coordinates[3] + " " +
+                   str(float(coordinates[4]) + move_by[0]) + " " + str(float(coordinates[5]) + move_by[1]))
+
+    tree.write(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
+
+
 def get_coordinates(object_id: str, spread_id: str):
     tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
     xml_object = tree.find(".//*[@Self='" + object_id + "']")

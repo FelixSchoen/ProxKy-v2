@@ -2,8 +2,6 @@ import math
 import os
 import re
 
-from src.main.configuration.variables import Regex
-
 
 def mm_to_pt(mm: float) -> float:
     return (1 / (1 / 72 * 25.4)) * mm
@@ -81,6 +79,7 @@ def split_string_reminder(reminder_array):
         if element[1] != "reminder":
             text_array.append(element)
         else:
+            from src.main.configuration.variables import Regex
             reminder_split = split_string_along_regex(element[0], Regex.TEMPLATE_MANA,
                                                       standard_identifier="reminder")
             text_array.extend(reminder_split)

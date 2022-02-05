@@ -3,6 +3,8 @@ import json
 import requests
 
 from src.main.configuration.config import CONFIG_ROOT_FOLDER, API_URL
+from src.main.utils.misc import mm_to_pt
+
 
 class Distances:
     # Height of the modal plus the amount of distance between oracle and the modal box
@@ -12,6 +14,8 @@ class Distances:
     ORACLE_BOT = ORACLE_TOP + 74.83464566929
     # Space between planeswalker text frames
     SPACE_PLANESWALKER = 2.125984251969
+    # How much to shift the elements for the basic layout
+    LAYOUT_BASIC_SHIFT = mm_to_pt(30.15)
 
 
 class Fonts:
