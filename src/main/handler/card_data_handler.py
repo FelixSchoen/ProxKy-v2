@@ -229,15 +229,67 @@ def set_collector_information(card: Card, id_set: dict) -> None:
 
     content = card.collector_number.zfill(3) + " • " + card.set.upper() + " • " + card.rarity.upper()[0]
     if card.side is not None:
-        content = card.side.value.upper() + " • " + content
+        content = card.side.upper() + " • " + content
 
     content_dict = {"content": content}
     content_dict.update(Fonts.META)
     set_text_field(id_set[Ids.COLLECTOR_INFORMATION_T], [([content_dict], {"justification": "RightAlign"})])
 
 
-def _oracle_text_handler(frame_id: str, main: str, flavor: str = None,
-                         regex_template: str = Regex.TEMPLATE_ORACLE, force_justification: str = None) -> int:
+def set_modal(card: Card, id_sets: [dict]) -> None:
+    """
+    Sets the modal of a card
+    :param card: Card to set the modal for
+    :param id_sets: Which ID sets to use
+    """
+    for i, id_set in enumerate(id_sets):
+        face = card.card_faces[(i + 1) % 2]
+
+        type_display = ""
+        if card.layout == "modal_dfc":
+            type_display = "MODAL"
+        elif card.layout == "transform":
+            type_display = "TRANSFORM"
+        elif card.layout == "meld":
+            type_display = "MELD"
+        elif card.layout == "double_faced_token":
+            type_display = "FLIP"
+        else:
+            raise NotImplementedError
+
+        line_to_insert = type_display + " — " + face.type_line.replace("Creature — ", "").replace("—", "•")
+
+        if len(face.mana_cost) > 0:
+            line_to_insert += " • " + face.mana_cost
+        if "Land" in face.type_line:
+            match = re.search(Regex.ADD_MANA, face.oracle_text)
+            if match:
+                line_to_insert += " • " + match.group("match")
+
+        line_to_insert = "{◄}\t" + line_to_insert + "\t{►}"
+
+        line_split = split_string_along_regex(line_to_insert, Regex.TEMPLATE_MANA)
+        content = []
+        for element in line_split:
+            content_dict = {"content": element[0]}
+            if element[1] == "normal":
+                content_dict.update(Fonts.MODAL)
+            elif element[1] == "mana":
+                mana_match = re.search(Regex.MANA, element[0])
+                mana_array = MANA_MAPPING[mana_match.group("match")]
+
+                content_dict["content"] = "".join(mana_array)
+                content_dict.update(Fonts.ORACLE_MANA)
+                content_dict["size"] = Fonts.MODAL["size"]
+            content.append(content_dict)
+
+        data = [(content, {"tablist": [("CenterAlign", str(mm_to_pt(26.75))),
+                                       ("RightAlign", str(mm_to_pt(53.5)))]})]
+        set_text_field(id_set[Ids.MODAL_T], data)
+
+
+def _oracle_text_handler(frame_id: str, main: str, flavor: str = None, regex_template: str = Regex.TEMPLATE_ORACLE,
+                         force_justification: str = None, force_font: dict = None) -> int:
     """
     Handles formatting of an oracle text box. Handles reminder and flavor text, and mana formatting.
     :param frame_id: Text frame of the oracle
@@ -298,6 +350,8 @@ def _oracle_text_handler(frame_id: str, main: str, flavor: str = None,
                 content_dict.update(Fonts.ORACLE_REMINDER)
             elif element[1] == "flavor":
                 content_dict.update(Fonts.ORACLE_FLAVOR)
+            if force_font is not None:
+                content_dict.update(force_font)
             content.append(content_dict)
 
     id_handler = InDesignHandler()
@@ -310,7 +364,7 @@ def _oracle_text_handler(frame_id: str, main: str, flavor: str = None,
         justification = "CenterAlign"
 
     data = [(content_main, {"justification": justification, "spacing": str(mm_to_pt(0.75))})]
-    if flavor is not None and not flavor:
+    if flavor is not None and len(flavor) > 0:
         data.append((content_flavor, {"justification": justification, "space_before": str(mm_to_pt(1.5))}))
 
     set_text_field(frame_id, data)
@@ -356,7 +410,8 @@ def _planeswalker_text_handler(id_set: dict, main: str, double_faced: bool = Fal
             index_planeswalker = i - int(flag_leading_text)
             text_loyalty = planeswalker_split[2 * (i - flag_leading_text) + flag_leading_text][0]
             text_oracle = planeswalker_split[2 * (i - flag_leading_text) + 1 + flag_leading_text][0]
-            _oracle_text_handler(id_set[Ids.PLANESWALKER_VALUE_T][index_planeswalker], text_loyalty, force_justification="RightAlign")
+            _oracle_text_handler(id_set[Ids.PLANESWALKER_VALUE_T][index_planeswalker], text_loyalty,
+                                 force_justification="RightAlign")
             lines[i] = _oracle_text_handler(id_set[Ids.PLANESWALKER_ORACLE_NUMBERED_T][index_planeswalker], text_oracle)
         # Trailing
         else:

@@ -36,6 +36,33 @@ def set_text_field(frame_id: str, data: [([dict], dict)]) -> None:
             paragraph_element.set("Hyphenation", "false")
         if "justification" in paragraph_dict:
             paragraph_element.set("Justification", paragraph_dict["justification"])
+        if "tablist" in paragraph_dict:
+            tablist = ElementTree.Element("TabList")
+            paragraph_properties_element.append(tablist)
+            tablist.set("type", "list")
+            for tab in paragraph_dict["tablist"]:
+                list_item = ElementTree.Element("ListItem")
+                tablist.append(list_item)
+                list_item.set("type", "record")
+
+                alignment = ElementTree.Element("Alignment")
+                list_item.append(alignment)
+                alignment.set("type", "enumeration")
+                alignment.text = tab[0]
+
+                alignment_character = ElementTree.Element("AlignmentCharacter")
+                list_item.append(alignment_character)
+                alignment_character.set("type", "string")
+                alignment_character.text = "."
+
+                leader = ElementTree.Element("Leader")
+                list_item.append(leader)
+                leader.set("type", "string")
+
+                position = ElementTree.Element("Position")
+                list_item.append(position)
+                position.set("type", "unit")
+                position.text = tab[1]
         if "space_before" in paragraph_dict:
             paragraph_element.set("SpaceBefore", paragraph_dict["space_before"])
         if "spacing" in paragraph_dict:

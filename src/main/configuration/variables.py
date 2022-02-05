@@ -17,6 +17,7 @@ class Distances:
 class Fonts:
     MANA_COST = {"font": "KyMana", "size": "10", "style": "Regular", "leading": "8"}
     META = {"font": "Helvetica Now Var", "size": "4.5", "style": "Display"}
+    MODAL = {"font": "Helvetica Now Var", "size": "5", "style": "Display"}
     NAME = {"font": "Helvetica Now Var", "size": "4.5", "style": "Display Bold"}
     ORACLE_REGULAR = {"font": "Plantin MT Pro", "size": "8", "style": "Regular"}
     ORACLE_KEYWORD = {"font": "Plantin MT Pro", "size": "8", "style": "Italic"}

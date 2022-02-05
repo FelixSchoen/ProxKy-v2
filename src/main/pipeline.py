@@ -3,12 +3,14 @@ import re
 import shutil
 import zipfile
 
-from src.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets
+from src.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, DOUBLE_SIDED_LAYOUTS
 from src.main.data.card import Card
+from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced
 from src.main.info.info import show_info, Info_Mode
 from src.main.utils.mtg import get_clean_name, get_card_types
 from src.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
-    set_collector_information, set_oracle_text, set_color_indicator, set_type_icon, set_artwork, set_planeswalker_text
+    set_collector_information, set_oracle_text, set_color_indicator, set_type_icon, set_artwork, set_planeswalker_text, \
+    set_modal
 
 
 def parse_card_list(list_path: str) -> [dict]:
@@ -68,8 +70,17 @@ def process_card(card: Card, options: dict = None) -> None:
     with zipfile.ZipFile(Paths.F_TEMPLATE, "r") as archive:
         archive.extractall(Paths.WORKING_MEMORY_CARD)
 
-    # TODO Adjust layouts
-    process_face(card, Id_Sets.ID_SET_FRONT, mode=card.layout)
+    # Layouts
+    if card.layout not in DOUBLE_SIDED_LAYOUTS:
+        layout_single_faced(Id_Sets.ID_SET_BACK)
+
+    if card.layout in ["normal", "class", "saga"]:
+        process_face(card, Id_Sets.ID_SET_FRONT)
+    elif card.layout in DOUBLE_SIDED_LAYOUTS:
+        layout_double_faced([Id_Sets.ID_SET_FRONT, Id_Sets.ID_SET_BACK])
+        set_modal(card, [Id_Sets.ID_SET_FRONT, Id_Sets.ID_SET_BACK])
+        process_face(card.card_faces[0], Id_Sets.ID_SET_FRONT)
+        process_face(card.card_faces[1], Id_Sets.ID_SET_BACK)
 
     shutil.make_archive(path_file, "zip", Paths.WORKING_MEMORY_CARD)
     try:
@@ -81,7 +92,9 @@ def process_card(card: Card, options: dict = None) -> None:
     show_info("Successfully processed", prefix=card.name, mode=Info_Mode.SUCCESS, end_line=True)
 
 
-def process_face(card: Card, id_set: dict, mode: str = "standard") -> None:
+def process_face(card: Card, id_set: dict) -> None:
+    type_line = get_card_types(card)
+
     # Common Attributes
     set_artwork(card, id_set)
     set_type_icon(card, id_set)
@@ -89,12 +102,12 @@ def process_face(card: Card, id_set: dict, mode: str = "standard") -> None:
     set_type_line(card, id_set)
     set_mana_cost(card, id_set)
     set_color_indicator(card, id_set)
-    set_value(card, id_set)
-    set_artist(card, id_set)
-    set_collector_information(card, id_set)
 
-    type_line = get_card_types(card)
     if "Planeswalker" in type_line:
         set_planeswalker_text(card, id_set)
     else:
         set_oracle_text(card, id_set)
+
+    set_value(card, id_set)
+    set_artist(card, id_set)
+    set_collector_information(card, id_set)
