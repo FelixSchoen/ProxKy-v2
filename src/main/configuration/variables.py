@@ -20,6 +20,7 @@ class Distances:
 
 class Fonts:
     MANA_COST = {"font": "KyMana", "size": "10", "style": "Regular", "leading": "8"}
+    MANA_COST_ADVENTURE = {"font": "KyMana", "size": "7.5", "style": "Regular"}
     META = {"font": "Helvetica Now Var", "size": "4.5", "style": "Display"}
     MODAL = {"font": "Helvetica Now Var", "size": "5", "style": "Display"}
     NAME = {"font": "Helvetica Now Var", "size": "4.5", "style": "Display Bold"}
@@ -29,7 +30,9 @@ class Fonts:
     ORACLE_REMINDER = {"font": "Plantin MT Pro", "size": "8", "style": "Italic"}
     ORACLE_FLAVOR = {"font": "Plantin MT Pro", "size": "8", "style": "Italic"}
     TITLE = {"font": "Beleren2016", "size": "8", "style": "Bold"}
+    TITLE_ADVENTURE = {"font": "Beleren2016", "size": "6.5", "style": "Bold"}
     TYPE_LINE = {"font": "Helvetica Now Var", "size": "6", "style": "Display"}
+    TYPE_LINE_ADVENTURE = {"font": "Helvetica Now Var", "size": "4.5", "style": "Display"}
     VALUE = {"font": "Beleren2016", "size": "10", "style": "Bold"}
 
 

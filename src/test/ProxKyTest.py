@@ -39,6 +39,6 @@ class PipelineTest(unittest.TestCase):
 
     def test_process_card(self):
         fetcher = ScryfallFetcher()
-        card = fetcher.fetch_card({"name": "Mountain"})
+        card = fetcher.fetch_card({"name": "Bonecrusher Giant"})
         process_card(card)
         self.assertTrue(card is not None)

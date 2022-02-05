@@ -122,6 +122,9 @@ class Card:
                 if self.layout in ["split", "adventure"]:
                     face.colors.extend(get_color_array(face.mana_cost))
 
+            if face.layout is None:
+                face.layout = self.layout
+
             if len(face.produced_mana) == 0:
                 # Find all instances of {X}: Add {Y}
                 matches = re.finditer(Regex.ADD_MANA, face.oracle_text)

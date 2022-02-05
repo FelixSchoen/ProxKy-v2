@@ -3,9 +3,10 @@ import re
 import shutil
 import zipfile
 
-from src.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, DOUBLE_SIDED_LAYOUTS
+from src.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, DOUBLE_SIDED_LAYOUTS, Ids, Fonts
 from src.main.data.card import Card
-from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic
+from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic, \
+    layout_adventure
 from src.main.info.info import show_info, Info_Mode
 from src.main.utils.mtg import get_clean_name, get_card_types
 from src.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
@@ -87,6 +88,22 @@ def process_card(card: Card, options: dict = None) -> None:
         layout_split(Id_Sets.ID_SET_FRONT)
         process_face(card.card_faces[0], Id_Sets.ID_SET_SPLIT_TOP_FRONT)
         process_face(card.card_faces[1], Id_Sets.ID_SET_SPLIT_BOT_FRONT)
+    elif card.layout in ["adventure"]:
+        layout_adventure(Id_Sets.ID_SET_FRONT)
+
+        id_adventure_right = Id_Sets.ID_SET_FRONT.copy()
+        id_adventure_right[Ids.ORACLE_T] = Id_Sets.ID_SET_FRONT_ADVENTURE[Ids.ADVENTURE_ORACLE_RIGHT_T]
+        id_adventure_right[Ids.ORACLE_O] = Id_Sets.ID_SET_FRONT_ADVENTURE[Ids.ADVENTURE_ORACLE_RIGHT_O]
+
+        id_adventure_left = Id_Sets.ID_SET_FRONT_ADVENTURE.copy()
+        id_adventure_left[Ids.ORACLE_T] = id_adventure_left[Ids.ADVENTURE_ORACLE_LEFT_T]
+
+        process_face(card.card_faces[0], id_adventure_right)
+        process_face(card.card_faces[1], id_adventure_left, mode="adventure")
+    elif card.layout in ["token", "emblem"]:
+        if card.oracle_text is None or len(card.oracle_text) == 0:
+            layout_basic(Id_Sets.ID_SET_FRONT)
+        process_face(card, Id_Sets.ID_SET_FRONT)
 
     shutil.make_archive(path_file, "zip", Paths.WORKING_MEMORY_CARD)
     try:
@@ -98,22 +115,27 @@ def process_card(card: Card, options: dict = None) -> None:
     show_info("Successfully processed", prefix=card.name, mode=Info_Mode.SUCCESS, end_line=True)
 
 
-def process_face(card: Card, id_set: dict) -> None:
+def process_face(card: Card, id_set: dict, mode: str = None) -> None:
     type_line = get_card_types(card)
 
     # Common Attributes
-    set_artwork(card, id_set)
+    if Ids.ARTWORK_O in id_set:
+        set_artwork(card, id_set)
+
     set_type_icon(card, id_set)
-    set_card_name(card, id_set)
-    set_type_line(card, id_set)
-    set_mana_cost(card, id_set)
+    set_card_name(card, id_set, font_settings=Fonts.TITLE_ADVENTURE if mode == "adventure" else dict())
+    set_type_line(card, id_set, font_settings=Fonts.TYPE_LINE_ADVENTURE if mode == "adventure" else None)
+    set_mana_cost(card, id_set, font_settings=Fonts.MANA_COST_ADVENTURE if mode == "adventure" else None)
     set_color_indicator(card, id_set)
 
     if "Planeswalker" in type_line:
         set_planeswalker_text(card, id_set)
     else:
-        set_oracle_text(card, id_set)
+        set_oracle_text(card, id_set, may_be_centered=card.layout not in ["adventure"])
 
-    set_value(card, id_set)
-    set_artist(card, id_set)
-    set_collector_information(card, id_set)
+    if Ids.VALUE_T in id_set:
+        set_value(card, id_set)
+    if Ids.ARTIST_INFORMATION_T in id_set:
+        set_artist(card, id_set)
+    if Ids.COLLECTOR_INFORMATION_T in id_set:
+        set_collector_information(card, id_set)

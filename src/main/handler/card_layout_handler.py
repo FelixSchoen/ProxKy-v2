@@ -37,6 +37,11 @@ def layout_split(id_set: dict):
     set_visibility(id_set[Ids.GROUP_SPLIT_O], id_set[Ids.SPREAD], True)
 
 
+def layout_adventure(id_set: dict):
+    set_visibility(id_set[Ids.ORACLE_O], id_set[Ids.SPREAD], False)
+    set_visibility(id_set[Ids.GROUP_ADVENTURE_O], id_set[Ids.SPREAD], True)
+
+
 def layout_basic(id_set: dict):
     set_visibility(id_set[Ids.ORACLE_O], id_set[Ids.SPREAD], False)
     set_visibility(id_set[Ids.COLOR_INDICATOR_TOP_O], id_set[Ids.SPREAD], False)

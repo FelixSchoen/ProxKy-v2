@@ -79,16 +79,19 @@ def set_type_icon(card: Card, id_set: dict) -> None:
     set_graphic(id_set[Ids.TYPE_ICON_O], id_set[Ids.SPREAD], Paths.CARD_TYPES, card_type.lower())
 
 
-def set_card_name(card: Card, id_set: dict) -> None:
+def set_card_name(card: Card, id_set: dict, font_settings: dict = None) -> None:
     """
     Sets the name and title of a card.
     :param card: Card to set the name for
     :param id_set: Which ID set to use
+    :param font_settings: Overrides the standard font settings
     """
     show_info("Processing card name...", prefix=card.name)
 
     content_dict = {"content": card.name}
     content_dict.update(Fonts.TITLE)
+    if font_settings is not None:
+        content_dict.update(font_settings)
     set_text_field(id_set[Ids.TITLE_T], [([content_dict], None)])
 
     # Check for e.g. split cards
@@ -98,28 +101,34 @@ def set_card_name(card: Card, id_set: dict) -> None:
         set_text_field(id_set[Ids.NAME_T], [([content_dict], {"justification": "CenterAlign"})])
 
 
-def set_type_line(card: Card, id_set: dict) -> None:
+def set_type_line(card: Card, id_set: dict, font_settings: dict = None) -> None:
     """
     Sets the type line of a card.
     :param card: Card to set the type line for
     :param id_set: Which ID set to use
+    :param font_settings: Overrides the standard font settings
     """
     show_info("Processing type line...", prefix=card.name)
     content_dict = {"content": card.type_line.replace("—", "•")}
     content_dict.update(Fonts.TYPE_LINE)
+    if font_settings is not None:
+        content_dict.update(font_settings)
     set_text_field(id_set[Ids.TYPE_LINE_T], [([content_dict], None)])
 
 
-def set_mana_cost(card: Card, id_set: dict) -> None:
+def set_mana_cost(card: Card, id_set: dict, font_settings: dict = None) -> None:
     """
     Sets the mana cost of a card.
     :param card: Card to set the mana cost for
     :param id_set: Which ID set to use
+    :param font_settings: Overrides the standard font settings
     """
     show_info("Processing mana cost...", prefix=card.name)
 
     content_dict = dict()
     content_dict.update(Fonts.MANA_COST)
+    if font_settings is not None:
+        content_dict.update(font_settings)
 
     mana = list(filter(None, [s.replace("{", "") for s in card.mana_cost.split("}")]))
     content = "".join([MANA_MAPPING["{" + m + "}"] for m in mana])
@@ -173,7 +182,8 @@ def set_oracle_text(card: Card, id_set: dict, may_be_centered: bool = True) -> N
     """
     show_info("Processing oracle text...", prefix=card.name)
 
-    _oracle_text_handler(id_set[Ids.ORACLE_T], card.oracle_text, flavor=card.flavor_text)
+    _oracle_text_handler(id_set[Ids.ORACLE_T], card.oracle_text, flavor=card.flavor_text,
+                         force_justification="LeftAlign" if not may_be_centered else None)
 
 
 def set_planeswalker_text(card: Card, id_set: dict) -> None:
