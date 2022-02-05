@@ -1,13 +1,80 @@
 import math
+import os
 import re
 
+import requests
+
 from src.main.configuration.config import CONFIG_PRINT_REMINDER_TEXT, CONFIG_PRINT_FLAVOR_TEXT
-from src.main.configuration.variables import Ids, Fonts, MANA_MAPPING, Regex, COLOR_MAPPING
+from src.main.configuration.variables import Ids, Fonts, MANA_MAPPING, Regex, COLOR_MAPPING, Paths, IMAGE_TYPES
 from src.main.data.card import Card
-from src.main.info.info import show_info
-from src.main.handler.xml_handler import set_text_field, set_gradient
-from src.main.utils.misc import split_string_along_regex, split_string_reminder, mm_to_pt
-from src.main.utils.mtg import sort_mana_array
+from src.main.handler.id_handler import InDesignHandler
+from src.main.info.info import show_info, Info_Mode
+from src.main.handler.xml_handler import set_text_field, set_gradient, set_graphic
+from src.main.utils.misc import split_string_along_regex, split_string_reminder, mm_to_pt, check_exists
+from src.main.utils.mtg import sort_mana_array, get_card_types
+
+
+def set_artwork(card: Card, id_set: dict) -> None:
+    """
+    Sets the artwork of a card.
+    :param card: Card to set the artwork for
+    :param id_set: Which ID set to use
+    """
+    show_info("Processing artwork...", prefix=card.name)
+
+    filename = str(card.collector_number) + " - " + card.name
+    path = Paths.ARTWORK + "/" + card.set.upper()
+    image_type = "na"
+
+    for possible_image_type in IMAGE_TYPES:
+        if check_exists(path + "/" + filename + "." + possible_image_type):
+            image_type = possible_image_type
+            break
+
+    if image_type == "na":
+        if "art_crop" not in card.image_uris:
+            show_info("No artwork on Scryfall", prefix=card.name, mode=Info_Mode.ERROR, end_line=True)
+            return
+
+        response = requests.get(card.image_uris["art_crop"])
+
+        if response.status_code != 200:
+            show_info("Could not download artwork", prefix=card.name, mode=Info_Mode.ERROR, end_line=True)
+            return
+
+        os.makedirs(Paths.ARTWORK_DOWNLOADED + "/" + card.set.upper(), exist_ok=True)
+        with open(Paths.ARTWORK_DOWNLOADED + "/" + card.set.upper() + "/" + filename + ".jpg", "wb") as handler:
+            path = Paths.ARTWORK_DOWNLOADED + "/" + card.set.upper()
+            image_type = "jpg"
+            handler.write(response.content)
+
+    set_graphic(id_set[Ids.ARTWORK_O], id_set[Ids.SPREAD], path, filename, type_file=image_type)
+
+
+def set_type_icon(card: Card, id_set: dict) -> None:
+    """
+    Sets the icon of a card.
+    :param card: Card to set the icon for
+    :param id_set: Which ID set to use
+    """
+    show_info("Processing card icon...", prefix=card.name)
+
+    types = get_card_types(card)
+    if "Legendary" in types:
+        types.remove("Legendary")
+    if "Basic" in types:
+        types.remove("Basic")
+    if "Token" in types:
+        types.remove("Token")
+    if "Snow" in types:
+        types.remove("Snow")
+
+    if len(types) != 1:
+        card_type = "Multiple"
+    else:
+        card_type = types[0]
+
+    set_graphic(id_set[Ids.TYPE_ICON_O], id_set[Ids.SPREAD], Paths.CARD_TYPES, card_type.lower())
 
 
 def set_card_name(card: Card, id_set: dict) -> None:
@@ -17,9 +84,14 @@ def set_card_name(card: Card, id_set: dict) -> None:
     :param id_set: Which ID set to use
     """
     show_info("Processing card name...", prefix=card.name)
+
     content_dict = {"content": card.name}
     content_dict.update(Fonts.TITLE)
     set_text_field(id_set[Ids.TITLE_T], [([content_dict], None)])
+
+    content_dict = {"content": card.name}
+    content_dict.update(Fonts.NAME)
+    set_text_field(id_set[Ids.NAME_T], [([content_dict], {"justification": "CenterAlign"})])
 
 
 def set_type_line(card: Card, id_set: dict) -> None:
@@ -62,6 +134,7 @@ def set_color_indicator(card: Card, id_set: dict) -> None:
     :param card: Card to set the color indicators for
     :param id_set: Which ID set to use
     """
+    show_info("Processing color indicator...", prefix=card.name)
     # Defines the amount of blur between borders of two colors
     distance = 0
     colors_to_apply = []
@@ -174,7 +247,7 @@ def _oracle_text_handler(frame_id: str, main: str, flavor: str = None,
         if len(split) > 0 and split[0][0].startswith("\n"):
             split[0] = (split[0][0][None or 1:], split[0][1])
         if len(split) > 0 and split[-1][0].endswith("\n"):
-            split[-1] = (split[-1][0][:-2 or None], split[-1][1])
+            split[-1] = (split[-1][0][:-1 or None], split[-1][1])
         split[:] = filter(lambda part: len(part[0]) > 0, split)
 
     # Add newline between main and flavor text
@@ -198,6 +271,8 @@ def _oracle_text_handler(frame_id: str, main: str, flavor: str = None,
 
                 content_dict["content"] = "".join(mana_array)
                 content_dict.update(Fonts.ORACLE_MANA)
+            elif element[1] == "keyword":
+                content_dict.update(Fonts.ORACLE_KEYWORD)
             elif element[1] == "reminder":
                 content_dict.update(Fonts.ORACLE_REMINDER)
             elif element[1] == "flavor":
@@ -205,4 +280,12 @@ def _oracle_text_handler(frame_id: str, main: str, flavor: str = None,
             content.append(content_dict)
 
     set_text_field(frame_id, [(content_main, {"spacing": str(mm_to_pt(0.75))}),
+                              (content_flavor, {"space_before": str(mm_to_pt(1.5))})])
+
+    print(content_main)
+    print(content_flavor)
+
+    # TODO
+    id_handler = InDesignHandler()
+    id_handler.get_text_lines([(content_main, {"spacing": str(mm_to_pt(0.75))}),
                               (content_flavor, {"space_before": str(mm_to_pt(1.5))})])

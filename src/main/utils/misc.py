@@ -1,4 +1,5 @@
 import math
+import os
 import re
 
 from src.main.configuration.variables import Regex
@@ -6,6 +7,10 @@ from src.main.configuration.variables import Regex
 
 def mm_to_pt(mm: float) -> float:
     return (1 / (1 / 72 * 25.4)) * mm
+
+
+def check_exists(path) -> bool:
+    return os.path.exists(path)
 
 
 def split_string_along_regex(string, matchers: ([str], str), standard_identifier="normal"):

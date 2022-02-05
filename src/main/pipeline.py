@@ -8,7 +8,7 @@ from src.main.data.card import Card
 from src.main.info.info import show_info, Info_Mode
 from src.main.utils.mtg import get_clean_name
 from src.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
-    set_collector_information, set_oracle_text, set_color_indicator
+    set_collector_information, set_oracle_text, set_color_indicator, set_type_icon, set_artwork
 
 
 def parse_card_list(list_path: str) -> [dict]:
@@ -70,7 +70,6 @@ def process_card(card: Card, options: dict = None) -> None:
 
     # TODO Adjust layouts
 
-    # TODO Fill
     process_face(card, Id_Sets.ID_SET_FRONT)
 
     shutil.make_archive(path_file, "zip", Paths.WORKING_MEMORY_CARD)
@@ -85,6 +84,8 @@ def process_card(card: Card, options: dict = None) -> None:
 
 def process_face(card: Card, id_set: dict, mode: str = "standard") -> None:
     if mode == "standard":
+        set_artwork(card, id_set)
+        set_type_icon(card, id_set)
         set_card_name(card, id_set)
         set_type_line(card, id_set)
         set_mana_cost(card, id_set)

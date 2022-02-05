@@ -1,6 +1,11 @@
 import unittest
 
+from win32com import client
+
+from src.main.configuration.config import CONFIG_INDESIGN_ID
+from src.main.configuration.variables import Paths, Fonts
 from src.main.data.fetcher import ScryfallFetcher
+from src.main.handler.id_handler import InDesignHandler
 from src.main.pipeline import parse_card_list, process_card
 
 VARIETY_CARDS = ["Black Lotus",
@@ -34,6 +39,21 @@ class PipelineTest(unittest.TestCase):
 
     def test_process_card(self):
         fetcher = ScryfallFetcher()
-        card = fetcher.fetch_card({"name": "Underground River"})
+        card = fetcher.fetch_card({"name": "Baleful Strix"})
         process_card(card)
         self.assertTrue(card is not None)
+
+    def test_another(self):
+        idhandler = InDesignHandler()
+        idasdf = InDesignHandler()
+
+        print(idhandler is idasdf)
+
+        content_1_dict = {"content": "Test\n"}
+        content_1_dict.update(Fonts.ORACLE_REGULAR)
+        content_2_dict = {"content": "RGB\n"}
+        content_2_dict.update(Fonts.ORACLE_MANA)
+
+        lines = idhandler.get_text_lines(data=[([content_1_dict, content_2_dict], {"justification": "CenterAlign", "space_before": 5, "spacing": 2})])
+        print(lines)
+        self.assertTrue(True)

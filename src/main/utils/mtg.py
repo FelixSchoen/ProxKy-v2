@@ -20,6 +20,12 @@ def get_color_array(colors: [str]) -> [str]:
     return final_array
 
 
+def get_card_types(card) -> [str]:
+    types = card.type_line.split("—")
+    types = list(filter(None, types[0].split(" ")))
+    return types
+
+
 def sort_mana_array(mana_array: [str]) -> [str]:
     """
     :param mana_array: Unsorted mana array
