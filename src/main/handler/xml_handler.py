@@ -30,6 +30,10 @@ def set_text_field(frame_id: str, data: [([dict], dict)]) -> None:
             pass
         else:
             paragraph_element.set("AppliedParagraphStyle", "ParagraphStyle/$ID/NormalParagraphStyle")
+        if "hyphenation" in paragraph_dict:
+            pass
+        else:
+            paragraph_element.set("Hyphenation", "false")
         if "justification" in paragraph_dict:
             paragraph_element.set("Justification", paragraph_dict["justification"])
         if "space_before" in paragraph_dict:
@@ -154,9 +158,15 @@ def set_graphic(frame_id: str, spread_id: str, path: str, filename: str, type_fi
     factor_y = size_box_y / bounding_box[1]
 
     factor = None
-    if mode_scale == "fit":
+    if mode_scale == "stretch":
         if min(factor_x, factor_y) * size_box_x >= bounding_box[0] \
                 and min(factor_x, factor_y) * size_box_y >= bounding_box[1]:
+            factor = min(factor_x, factor_y)
+        else:
+            factor = max(factor_x, factor_y)
+    if mode_scale == "fit":
+        if min(factor_x, factor_y) * size_box_x <= bounding_box[0] \
+                and min(factor_x, factor_y) * size_box_y <= bounding_box[1]:
             factor = min(factor_x, factor_y)
         else:
             factor = max(factor_x, factor_y)
@@ -198,6 +208,43 @@ def set_graphic(frame_id: str, spread_id: str, path: str, filename: str, type_fi
 
     frame.append(graphic)
     tree.write(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
+
+
+def set_visibility(object_id: str, spread_id: str, visible) -> None:
+    tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
+    xml_object = tree.find(".//*[@Self='" + object_id + "']")
+    xml_object.set("Visible", "true" if visible else "false")
+    tree.write(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
+
+
+def set_coordinates(object_id: str, spread_id: str,
+                    coordinates: [(float, float), (float, float), (float, float), (float, float)]):
+    tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
+    xml_object = tree.find(".//*[@Self='" + object_id + "']")
+
+    top_left = xml_object.find(".//PathPointType[1]")
+    top_right = xml_object.find(".//PathPointType[4]")
+    bottom_left = xml_object.find(".//PathPointType[2]")
+    bottom_right = xml_object.find(".//PathPointType[3]")
+
+    for i, point in enumerate([top_left, top_right, bottom_left, bottom_right]):
+        point.attrib.pop("Anchor")
+        point.attrib.pop("LeftDirection")
+        point.attrib.pop("RightDirection")
+
+        coordinate = str(coordinates[i][0]) + " " + str(coordinates[i][1])
+
+        point.set("Anchor", coordinate)
+        point.set("LeftDirection", coordinate)
+        point.set("RightDirection", coordinate)
+
+    tree.write(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
+
+
+def get_coordinates(object_id: str, spread_id: str):
+    tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
+    xml_object = tree.find(".//*[@Self='" + object_id + "']")
+    return _get_coordinates(xml_object)
 
 
 def _get_coordinates(element):

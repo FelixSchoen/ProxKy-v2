@@ -39,21 +39,6 @@ class PipelineTest(unittest.TestCase):
 
     def test_process_card(self):
         fetcher = ScryfallFetcher()
-        card = fetcher.fetch_card({"name": "Baleful Strix"})
+        card = fetcher.fetch_card({"name": "Jeska, Thrice Reborn"})
         process_card(card)
         self.assertTrue(card is not None)
-
-    def test_another(self):
-        idhandler = InDesignHandler()
-        idasdf = InDesignHandler()
-
-        print(idhandler is idasdf)
-
-        content_1_dict = {"content": "Test\n"}
-        content_1_dict.update(Fonts.ORACLE_REGULAR)
-        content_2_dict = {"content": "RGB\n"}
-        content_2_dict.update(Fonts.ORACLE_MANA)
-
-        lines = idhandler.get_text_lines(data=[([content_1_dict, content_2_dict], {"justification": "CenterAlign", "space_before": 5, "spacing": 2})])
-        print(lines)
-        self.assertTrue(True)

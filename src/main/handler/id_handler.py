@@ -7,12 +7,14 @@ from src.main.configuration.config import CONFIG_INDESIGN_ID
 from src.main.configuration.variables import Paths, Fonts
 
 
-class InDesignHandler:
+def InDesignHandler():
+    if _InDesignHandler._instance is None:
+        _InDesignHandler._instance = _InDesignHandler()
+    return _InDesignHandler._instance
 
-    def __new__(cls):
-        if not hasattr(cls, "instance"):
-            cls.instance = super(InDesignHandler, cls).__new__(cls)
-        return cls.instance
+
+class _InDesignHandler:
+    _instance = None
 
     def __init__(self) -> None:
         super().__init__()
@@ -22,7 +24,6 @@ class InDesignHandler:
     def __del__(self):
         if self.study_document is not None:
             self.study_document.Close(Saving=1852776480)
-            pass
 
     def _get_study_document(self):
         if self.app is None:
@@ -60,12 +61,18 @@ class InDesignHandler:
                     insertion_point.Contents = content
 
             paragraph_dict = paragraph[1] if paragraph[1] is not None else dict()
+            if text_frame.Paragraphs.Count < 1:
+                continue
             current_paragraph = text_frame.Paragraphs[text_frame.Paragraphs.Count - 1]
             # Standards
             current_paragraph.Justification = 1818584692
             current_paragraph.SameParaStyleSpacing = 1768386162
             current_paragraph.SpaceBefore = 0
 
+            if "hyphenation" in paragraph_dict:
+                pass
+            else:
+                current_paragraph.Hyphenation = False
             if "justification" in paragraph_dict:
                 justification = paragraph_dict["justification"]
                 value = 1818584692
@@ -77,7 +84,6 @@ class InDesignHandler:
                     value = 1919379572
                 current_paragraph.Justification = value
             if "space_before" in paragraph_dict:
-                print("test")
                 current_paragraph.SpaceBefore = paragraph_dict["space_before"] + "pt"
             if "spacing" in paragraph_dict:
                 current_paragraph.SameParaStyleSpacing = paragraph_dict["spacing"] + "pt"

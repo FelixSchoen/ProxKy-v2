@@ -5,11 +5,13 @@ import re
 import requests
 
 from src.main.configuration.config import CONFIG_PRINT_REMINDER_TEXT, CONFIG_PRINT_FLAVOR_TEXT
-from src.main.configuration.variables import Ids, Fonts, MANA_MAPPING, Regex, COLOR_MAPPING, Paths, IMAGE_TYPES
+from src.main.configuration.variables import Ids, Fonts, MANA_MAPPING, Regex, COLOR_MAPPING, Paths, IMAGE_TYPES, \
+    Distances
 from src.main.data.card import Card
 from src.main.handler.id_handler import InDesignHandler
+from src.main.handler.xml_handler import set_text_field, set_gradient, set_graphic, set_visibility, get_coordinates, \
+    set_coordinates
 from src.main.info.info import show_info, Info_Mode
-from src.main.handler.xml_handler import set_text_field, set_gradient, set_graphic
 from src.main.utils.misc import split_string_along_regex, split_string_reminder, mm_to_pt, check_exists
 from src.main.utils.mtg import sort_mana_array, get_card_types
 
@@ -48,7 +50,7 @@ def set_artwork(card: Card, id_set: dict) -> None:
             image_type = "jpg"
             handler.write(response.content)
 
-    set_graphic(id_set[Ids.ARTWORK_O], id_set[Ids.SPREAD], path, filename, type_file=image_type)
+    set_graphic(id_set[Ids.ARTWORK_O], id_set[Ids.SPREAD], path, filename, type_file=image_type, mode_scale="stretch")
 
 
 def set_type_icon(card: Card, id_set: dict) -> None:
@@ -145,7 +147,8 @@ def set_color_indicator(card: Card, id_set: dict) -> None:
         colors_to_apply = card.colors
     elif "Land" in card.type_line:
         colors_to_apply = card.produced_mana
-        colors_to_apply.remove("C")
+        if "C" in colors_to_apply:
+            colors_to_apply.remove("C")
 
     if len(colors_to_apply) == 0:
         colors_to_apply.append("C")
@@ -159,10 +162,27 @@ def set_color_indicator(card: Card, id_set: dict) -> None:
         set_gradient(gradient_id, internal_color_name_array, distance)
 
 
-def set_oracle_text(card: Card, id_set: dict) -> None:
+def set_oracle_text(card: Card, id_set: dict, may_be_centered: bool = True) -> None:
+    """
+    Sets the oracle text of a card.
+    :param card: Card to set the oracle text for
+    :param id_set: Which ID set to use
+    :param may_be_centered: Whether the text may be centered if it is below a certain amount of lines
+    """
     show_info("Processing oracle text...", prefix=card.name)
 
     _oracle_text_handler(id_set[Ids.ORACLE_T], card.oracle_text, flavor=card.flavor_text)
+
+
+def set_planeswalker_text(card: Card, id_set: dict) -> None:
+    """
+    Sets the planeswalker text of a card.
+    :param card: Card to set the planeswalker text for
+    :param id_set: Which ID set to use
+    """
+    show_info("Processing planeswalker text...", prefix=card.name)
+
+    _planeswalker_text_handler(id_set, card.oracle_text)
 
 
 def set_value(card: Card, id_set: dict) -> None:
@@ -217,13 +237,14 @@ def set_collector_information(card: Card, id_set: dict) -> None:
 
 
 def _oracle_text_handler(frame_id: str, main: str, flavor: str = None,
-                         regex_template: str = Regex.TEMPLATE_ORACLE) -> None:
+                         regex_template: str = Regex.TEMPLATE_ORACLE, force_justification: str = None) -> int:
     """
     Handles formatting of an oracle text box. Handles reminder and flavor text, and mana formatting.
     :param frame_id: Text frame of the oracle
     :param main: Main (rule) text
     :param flavor: Optional flavor text
     :param regex_template: Which parser to use
+    :return Number of lines set
     """
     main_split = split_string_along_regex(main, regex_template)
     flavor_split = []
@@ -279,13 +300,98 @@ def _oracle_text_handler(frame_id: str, main: str, flavor: str = None,
                 content_dict.update(Fonts.ORACLE_FLAVOR)
             content.append(content_dict)
 
-    set_text_field(frame_id, [(content_main, {"spacing": str(mm_to_pt(0.75))}),
-                              (content_flavor, {"space_before": str(mm_to_pt(1.5))})])
-
-    print(content_main)
-    print(content_flavor)
-
-    # TODO
     id_handler = InDesignHandler()
-    id_handler.get_text_lines([(content_main, {"spacing": str(mm_to_pt(0.75))}),
-                              (content_flavor, {"space_before": str(mm_to_pt(1.5))})])
+    data = [(content_main, {"spacing": str(mm_to_pt(0.75))}),
+            (content_flavor, {"space_before": str(mm_to_pt(1.5))})]
+    lines = id_handler.get_text_lines(data)
+
+    justification = "LeftAlign" if force_justification is None else force_justification
+    if force_justification is None and lines <= 2:
+        justification = "CenterAlign"
+
+    data = [(content_main, {"justification": justification, "spacing": str(mm_to_pt(0.75))})]
+    if flavor is not None and not flavor:
+        data.append((content_flavor, {"justification": justification, "space_before": str(mm_to_pt(1.5))}))
+
+    set_text_field(frame_id, data)
+
+    return lines
+
+
+def _planeswalker_text_handler(id_set: dict, main: str, double_faced: bool = False,
+                               regex_template: str = Regex.TEMPLATE_PLANESWALKER) -> None:
+    planeswalker_split = split_string_along_regex(main, regex_template)
+    if "\n" in planeswalker_split[-1][0]:
+        # Split up last entry
+        loyalty_oracle_combined = planeswalker_split.pop()
+        loyalty_oracle_split = split_string_along_regex(loyalty_oracle_combined[0], Regex.TEMPLATE_BREAK)
+        planeswalker_split.append(loyalty_oracle_split[0])
+
+        # Concatenate trailing part
+        trailing = ""
+        for trailing_tuple in loyalty_oracle_split[2:]:
+            trailing += trailing_tuple[0]
+        planeswalker_split.append((trailing, "normal"))
+
+    # Get amount of abilities
+    amount_abilities = sum(x[1] == "loyalty" for x in planeswalker_split)
+    if amount_abilities > 4:
+        raise NotImplementedError("Too many abilities")
+
+    # Check if we have an additional leading or trailing box
+    flag_leading_text = planeswalker_split[0][1] != "loyalty"
+    flag_trailing_text = planeswalker_split[-2][1] != "loyalty"
+    set_visibility(id_set[Ids.ORACLE_O], id_set[Ids.SPREAD], flag_leading_text)
+
+    # Array of lines, saves how many lines each entry has
+    amount_boxes = (amount_abilities + (1 if flag_leading_text else 0) + (1 if flag_trailing_text else 0))
+    lines = [0] * amount_boxes
+
+    for i in range(0, amount_boxes):
+        # Leading
+        if i == 0 and flag_leading_text:
+            lines[0] = _oracle_text_handler(id_set[Ids.ORACLE_T], planeswalker_split[0][0])
+        # Planeswalker Oracle
+        elif int(flag_leading_text) <= i < amount_boxes - int(flag_trailing_text):
+            index_planeswalker = i - int(flag_leading_text)
+            text_loyalty = planeswalker_split[2 * (i - flag_leading_text) + flag_leading_text][0]
+            text_oracle = planeswalker_split[2 * (i - flag_leading_text) + 1 + flag_leading_text][0]
+            _oracle_text_handler(id_set[Ids.PLANESWALKER_VALUE_T][index_planeswalker], text_loyalty, force_justification="RightAlign")
+            lines[i] = _oracle_text_handler(id_set[Ids.PLANESWALKER_ORACLE_NUMBERED_T][index_planeswalker], text_oracle)
+        # Trailing
+        else:
+            lines[i] = _oracle_text_handler(id_set[Ids.PLANESWALKER_ORACLE_FINAL_T], planeswalker_split[-1][0])
+
+    top_coordinate = Distances.ORACLE_TOP
+    if double_faced:
+        top_coordinate += Distances.MODAL_HEIGHT
+    height_budget = Distances.ORACLE_BOT + abs(top_coordinate)
+    height_budget -= Distances.SPACE_PLANESWALKER * (amount_boxes - 1)
+
+    for i in range(0, amount_boxes):
+        shift_modal = double_faced * Distances.MODAL_HEIGHT
+        shift_previous_boxes = (i * Distances.SPACE_PLANESWALKER) + (
+                (sum(lines[:i]) / sum(lines)) * height_budget)
+        shift_sum = shift_modal + shift_previous_boxes
+
+        # Leading
+        if i == 0 and flag_leading_text:
+            object_ids = [id_set[Ids.ORACLE_O]]
+        # Planeswalker Oracle
+        elif int(flag_leading_text) <= i < amount_boxes - int(flag_trailing_text):
+            index_planeswalker = i - int(flag_leading_text)
+            object_ids = [id_set[Ids.PLANESWALKER_VALUE_O][index_planeswalker],
+                          id_set[Ids.PLANESWALKER_ORACLE_NUMBERED_O][index_planeswalker]]
+        # Trailing
+        else:
+            object_ids = [id_set[Ids.PLANESWALKER_ORACLE_FINAL_O]]
+
+        for object_id in object_ids:
+            coordinates = get_coordinates(object_id, id_set[Ids.SPREAD])
+            set_coordinates(object_id, id_set[Ids.SPREAD], [(coordinates[0][0], coordinates[0][1] + shift_sum),
+                                                            (coordinates[1][0], coordinates[1][1] + shift_sum),
+                                                            (coordinates[0][0], coordinates[0][1] + shift_sum + (
+                                                                    (lines[i] / sum(lines)) * height_budget)),
+                                                            (coordinates[1][0], coordinates[1][1] + shift_sum + (
+                                                                    (lines[i] / sum(lines)) * height_budget))])
+            set_visibility(object_id, id_set[Ids.SPREAD], True)

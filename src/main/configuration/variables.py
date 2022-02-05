@@ -4,6 +4,15 @@ import requests
 
 from src.main.configuration.config import CONFIG_ROOT_FOLDER, API_URL
 
+class Distances:
+    # Height of the modal plus the amount of distance between oracle and the modal box
+    MODAL_HEIGHT = 11.33858267717
+    # Coordinates of the Oracle Box, in order to distribute planeswalker boxes
+    ORACLE_TOP = -29.55631007189999
+    ORACLE_BOT = ORACLE_TOP + 74.83464566929
+    # Space between planeswalker text frames
+    SPACE_PLANESWALKER = 2.125984251969
+
 
 class Fonts:
     MANA_COST = {"font": "KyMana", "size": "10", "style": "Regular", "leading": "8"}
