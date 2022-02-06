@@ -16,6 +16,8 @@ class Distances:
     SPACE_PLANESWALKER = 2.125984251969
     # How much to shift the elements for the basic layout
     LAYOUT_BASIC_SHIFT = mm_to_pt(30.15)
+    # How much to enlarge the artwork in order to have it cover the entire card
+    LAYOUT_FULL_ART_SHIFT = mm_to_pt(45.9)
 
 
 class Fonts:

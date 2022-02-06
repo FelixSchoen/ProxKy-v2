@@ -6,7 +6,7 @@ import zipfile
 from src.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, DOUBLE_SIDED_LAYOUTS, Ids, Fonts
 from src.main.data.card import Card
 from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic, \
-    layout_adventure
+    layout_adventure, layout_transparent_body_art
 from src.main.info.info import show_info, Info_Mode
 from src.main.utils.mtg import get_clean_name, get_card_types
 from src.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
@@ -77,6 +77,14 @@ def process_card(card: Card, options: dict = None) -> None:
     if "Basic" in get_card_types(card):
         layout_basic(Id_Sets.ID_SET_FRONT)
 
+    # Options
+    if "tba" in options:
+        if options["tba"] in ["front", "both"]:
+            layout_transparent_body_art(Id_Sets.ID_SET_FRONT)
+        if options["tba"] in ["back", "both"]:
+            layout_transparent_body_art(Id_Sets.ID_SET_BACK)
+
+    # Processing
     if card.layout in ["normal", "class", "saga"]:
         process_face(card, Id_Sets.ID_SET_FRONT)
     elif card.layout in DOUBLE_SIDED_LAYOUTS:
@@ -105,6 +113,7 @@ def process_card(card: Card, options: dict = None) -> None:
             layout_basic(Id_Sets.ID_SET_FRONT)
         process_face(card, Id_Sets.ID_SET_FRONT)
 
+    # Packaging
     shutil.make_archive(path_file, "zip", Paths.WORKING_MEMORY_CARD)
     try:
         os.remove(path_file_extension)
@@ -116,6 +125,12 @@ def process_card(card: Card, options: dict = None) -> None:
 
 
 def process_face(card: Card, id_set: dict, mode: str = None) -> None:
+    """
+    Fills the given face with all the necessary information, e.g. title, oracle text, ...
+    :param card: Card object containing the information
+    :param id_set: Which id set to use
+    :param mode: Specifies which special mode (e.g., adventure) to use
+    """
     type_line = get_card_types(card)
 
     # Common Attributes

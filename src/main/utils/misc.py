@@ -72,7 +72,12 @@ def split_string_along_regex(string, matchers: ([str], str), standard_identifier
     return result
 
 
-def split_string_reminder(reminder_array):
+def split_string_reminder(reminder_array) -> [str]:
+    """
+    Splits the reminder text, in order to handle, e.g., mana text in the reminder
+    :param reminder_array: The reminder text
+    :return: The split-up text
+    """
     text_array = []
 
     for element in reminder_array:

@@ -160,7 +160,16 @@ def set_gradient(gradient_id: str, colors: [str], distance: float = 0) -> None:
 
 
 def set_graphic(frame_id: str, spread_id: str, path: str, filename: str, type_file: str = "svg",
-                mode_scale: str = "fit"):
+                mode_scale: str = "fit") -> None:
+    """
+    Fills the given frame with the provided graphic
+    :param frame_id: Image frame of the graphic
+    :param spread_id: Spread where the image frame occurs
+    :param path: Path to the file
+    :param filename: Name of the file
+    :param type_file: Extension of the file
+    :param mode_scale: Whether to fit (align with larger side) or stretch (align with smaller side) the image
+    """
     tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
     frame = tree.find(".//Rectangle[@Self='" + frame_id + "']")
     coordinates = _get_coordinates(frame)
@@ -238,6 +247,12 @@ def set_graphic(frame_id: str, spread_id: str, path: str, filename: str, type_fi
 
 
 def set_visibility(object_id: str, spread_id: str, visible) -> None:
+    """
+    Change the visibility of the given object
+    :param object_id: ID of the object
+    :param spread_id: Spread where the object occurs
+    :param visible: Whether the object should be visible or not
+    """
     tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
     xml_object = tree.find(".//*[@Self='" + object_id + "']")
     xml_object.set("Visible", "true" if visible else "false")
@@ -245,7 +260,13 @@ def set_visibility(object_id: str, spread_id: str, visible) -> None:
 
 
 def set_coordinates(object_id: str, spread_id: str,
-                    coordinates: [(float, float), (float, float), (float, float), (float, float)]):
+                    coordinates: [(float, float), (float, float), (float, float), (float, float)]) -> None:
+    """
+    Adjusts the coordinates of the given object.
+    :param object_id: Object to change the coordinates for
+    :param spread_id: Spread where to object occurs
+    :param coordinates: The new coordinates of the object
+    """
     tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
     xml_object = tree.find(".//*[@Self='" + object_id + "']")
 
@@ -268,8 +289,32 @@ def set_coordinates(object_id: str, spread_id: str,
     tree.write(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
 
 
+def set_transparency(object_id: str, spread_id: str, opacity: float, mode:str="Fill") -> None:
+    """
+    Adjusts the transparency of the given object.
+    :param object_id: Object to change the transparency for
+    :param spread_id: Spread where the object occurs
+    :param opacity: The transparency to set
+    """
+    tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
+    xml_object = tree.find(".//*[@Self='" + object_id + "']")
+
+    transparency = ElementTree.Element(mode + "TransparencySetting")
+    blending = ElementTree.Element("BlendingSetting")
+    blending.set("Opacity", str(opacity))
+    transparency.append(blending)
+    xml_object.append(transparency)
+
+    tree.write(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
+
 def move(object_id: str, spread_id: str,
-         move_by: (int, int)):
+         move_by: (int, int)) -> None:
+    """
+    Moves an object by modifying its "ItemTransform" record.
+    :param object_id: Object to move
+    :param spread_id: Spread where the object occurs
+    :param move_by: Adjustments in x and y direction
+    """
     tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
     xml_object = tree.find(".//*[@Self='" + object_id + "']")
 
@@ -281,7 +326,13 @@ def move(object_id: str, spread_id: str,
     tree.write(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
 
 
-def get_coordinates(object_id: str, spread_id: str):
+def get_coordinates(object_id: str, spread_id: str) -> ((int, int), (int, int), (int, int), (int, int)):
+    """
+    Obtains the coordinates of an object.
+    :param object_id: Object to obtain the coordinates for
+    :param spread_id: Spread where the object occurs
+    :return: Coordinates of the corner points of the object, in the order top left, top right, bottom left, bottom right
+    """
     tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
     xml_object = tree.find(".//*[@Self='" + object_id + "']")
     return _get_coordinates(xml_object)

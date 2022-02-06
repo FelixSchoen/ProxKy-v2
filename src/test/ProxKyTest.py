@@ -39,6 +39,12 @@ class PipelineTest(unittest.TestCase):
 
     def test_process_card(self):
         fetcher = ScryfallFetcher()
-        card = fetcher.fetch_card({"name": "Bonecrusher Giant"})
+        card = fetcher.fetch_card({"name": "Black Lotus"})
         process_card(card)
+        self.assertTrue(card is not None)
+
+    def test_process_card_with_transparent_body_art(self):
+        fetcher = ScryfallFetcher()
+        card = fetcher.fetch_card({"name": "Gisela, the Broken Blade"})
+        process_card(card, {"tba": "back"})
         self.assertTrue(card is not None)
