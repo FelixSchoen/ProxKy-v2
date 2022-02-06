@@ -6,7 +6,7 @@ from src.main.configuration.config import CONFIG_INDESIGN_ID
 from src.main.configuration.variables import Paths, Fonts
 from src.main.data.fetcher import ScryfallFetcher
 from src.main.handler.indesign_handler import InDesignHandler
-from src.main.pipeline import parse_card_list, process_card
+from src.main.pipeline import parse_card_list, process_card, process_print
 
 VARIETY_CARDS = ["Black Lotus",
                  "Clearwater Pathway",

@@ -416,7 +416,8 @@ def _planeswalker_text_handler(id_set: dict, main: str, double_faced: bool = Fal
     for i in range(0, amount_boxes):
         # Leading
         if i == 0 and flag_leading_text:
-            lines[0] = _oracle_text_handler(id_set[Ids.ORACLE_T], planeswalker_split[0][0])
+            lines[0] = _oracle_text_handler(id_set[Ids.ORACLE_T], planeswalker_split[0][0],
+                                            force_justification="LeftAlign")
         # Planeswalker Oracle
         elif int(flag_leading_text) <= i < amount_boxes - int(flag_trailing_text):
             index_planeswalker = i - int(flag_leading_text)
@@ -424,10 +425,12 @@ def _planeswalker_text_handler(id_set: dict, main: str, double_faced: bool = Fal
             text_oracle = planeswalker_split[2 * (i - flag_leading_text) + 1 + flag_leading_text][0]
             _oracle_text_handler(id_set[Ids.PLANESWALKER_VALUE_T][index_planeswalker], text_loyalty,
                                  force_justification="RightAlign")
-            lines[i] = _oracle_text_handler(id_set[Ids.PLANESWALKER_ORACLE_NUMBERED_T][index_planeswalker], text_oracle)
+            lines[i] = _oracle_text_handler(id_set[Ids.PLANESWALKER_ORACLE_NUMBERED_T][index_planeswalker], text_oracle,
+                                            force_justification="LeftAlign")
         # Trailing
         else:
-            lines[i] = _oracle_text_handler(id_set[Ids.PLANESWALKER_ORACLE_FINAL_T], planeswalker_split[-1][0])
+            lines[i] = _oracle_text_handler(id_set[Ids.PLANESWALKER_ORACLE_FINAL_T], planeswalker_split[-1][0],
+                                            force_justification="LeftAlign")
 
     top_coordinate = Distances.ORACLE_TOP
     if double_faced:

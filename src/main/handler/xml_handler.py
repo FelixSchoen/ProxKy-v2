@@ -246,6 +246,24 @@ def set_graphic(frame_id: str, spread_id: str, path: str, filename: str, type_fi
     tree.write(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
 
 
+def set_pdf(frame_id: str, spread_id: str, path: str, filename: str, page: int = 1) -> None:
+    tree = ElementTree.parse(Paths.WORKING_MEMORY_PRINT + "/Spreads/Spread_" + spread_id + ".xml")
+    rectangle = tree.find(".//Rectangle[@Self='" + frame_id + "']")
+
+    pdf = ElementTree.Element("PDF")
+    pdf.set("ItemTransform", "1 0 0 1 -77.95261341004854 -651.6848968746158")
+    pdf_attribute = ElementTree.Element("PDFAttribute")
+    pdf_attribute.set("PageNumber", str(page))
+    link = ElementTree.Element("Link")
+    link.set("LinkResourceURI", "file:" + path + "/" + filename + ".pdf")
+
+    rectangle.append(pdf)
+    pdf.append(pdf_attribute)
+    pdf.append(link)
+
+    tree.write(Paths.WORKING_MEMORY_PRINT + "/Spreads/Spread_" + spread_id + ".xml")
+
+
 def set_visibility(object_id: str, spread_id: str, visible) -> None:
     """
     Change the visibility of the given object
@@ -289,7 +307,7 @@ def set_coordinates(object_id: str, spread_id: str,
     tree.write(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
 
 
-def set_transparency(object_id: str, spread_id: str, opacity: float, mode:str="Fill") -> None:
+def set_transparency(object_id: str, spread_id: str, opacity: float, mode: str = "Fill") -> None:
     """
     Adjusts the transparency of the given object.
     :param object_id: Object to change the transparency for
@@ -306,6 +324,7 @@ def set_transparency(object_id: str, spread_id: str, opacity: float, mode:str="F
     xml_object.append(transparency)
 
     tree.write(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
+
 
 def move(object_id: str, spread_id: str,
          move_by: (int, int)) -> None:

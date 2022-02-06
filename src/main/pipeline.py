@@ -7,8 +7,9 @@ from src.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id
 from src.main.data.card import Card
 from src.main.data.fetcher import Fetcher
 from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic, \
-    layout_adventure, layout_transparent_body_art
+    layout_adventure, layout_transparent_body_art, layout_planeswalker
 from src.main.handler.indesign_handler import InDesignHandler
+from src.main.handler.xml_handler import set_pdf
 from src.main.utils.info import show_info, Info_Mode
 from src.main.utils.misc import divide_into_chunks
 from src.main.utils.mtg import get_clean_name, get_card_types
@@ -83,8 +84,6 @@ def process_card(card: Card, options: dict = None) -> None:
     # Layouts
     if card.layout not in DOUBLE_SIDED_LAYOUTS:
         layout_single_faced(Id_Sets.ID_SET_BACK)
-    if "Basic" in get_card_types(card):
-        layout_basic(Id_Sets.ID_SET_FRONT)
 
     # Options
     if options is None:
@@ -145,6 +144,12 @@ def process_face(card: Card, id_set: dict, mode: str = None) -> None:
     """
     type_line = get_card_types(card)
 
+    # Layouts
+    if "Basic" in type_line:
+        layout_basic(id_set)
+    if "Planeswalker" in type_line:
+        layout_planeswalker(id_set)
+
     # Common Attributes
     if Ids.ARTWORK_O in id_set:
         set_artwork(card, id_set)
@@ -180,6 +185,8 @@ def process_print(card_entries: [dict]) -> None:
             else:
                 cards_to_print.append(card)
 
+    os.makedirs(Paths.PRINT, exist_ok=True)
+
     # Delete old files
     for filename in os.listdir(Paths.PRINT):
         file_path = os.path.join(Paths.PRINT, filename)
@@ -205,9 +212,24 @@ def process_print(card_entries: [dict]) -> None:
         indesign_handler = InDesignHandler()
 
         for j, card in enumerate(page):
-            clean_name = get_clean_name(card.name)
+            clean_name = card.collector_number + " - " + get_clean_name(card.name)
 
             # Convert to PDF
             if card.id not in already_handled_cards:
                 indesign_handler.generate_pdf(card)
                 already_handled_cards.append(card.id)
+
+            set_pdf(Id_Sets.ID_SET_PRINT_FRONT[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_FRONT[Ids.SPREAD],
+                    Paths.PDF + "/" + card.set.upper(), clean_name)
+
+            if card.layout in DOUBLE_SIDED_LAYOUTS:
+                set_pdf(Id_Sets.ID_SET_PRINT_BACK[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_BACK[Ids.SPREAD],
+                        Paths.PDF + "/" + card.set.upper(), clean_name, page=2)
+
+        shutil.make_archive(target_file_path, "zip", Paths.WORKING_MEMORY_PRINT)
+        try:
+            os.remove(target_file_path_extension)
+        except OSError:
+            pass
+        os.rename(target_file_path + ".zip", target_file_path + ".idml")
+        shutil.rmtree(Paths.WORKING_MEMORY_PRINT)
