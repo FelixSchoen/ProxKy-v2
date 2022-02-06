@@ -8,10 +8,10 @@ from src.main.configuration.config import CONFIG_PRINT_REMINDER_TEXT, CONFIG_PRI
 from src.main.configuration.variables import Ids, Fonts, MANA_MAPPING, Regex, COLOR_MAPPING, Paths, IMAGE_TYPES, \
     Distances
 from src.main.data.card import Card
-from src.main.handler.id_handler import InDesignHandler
+from src.main.handler.indesign_handler import InDesignHandler
 from src.main.handler.xml_handler import set_text_field, set_gradient, set_graphic, set_visibility, get_coordinates, \
     set_coordinates
-from src.main.info.info import show_info, Info_Mode
+from src.main.utils.info import show_info, Info_Mode
 from src.main.utils.misc import split_string_along_regex, split_string_reminder, mm_to_pt, check_exists
 from src.main.utils.mtg import sort_mana_array, get_card_types
 

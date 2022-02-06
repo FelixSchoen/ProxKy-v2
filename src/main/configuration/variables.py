@@ -306,8 +306,8 @@ class Paths:
     ICONS = RESOURCES + "/Icons"
     CARD_TYPES = ICONS + "/Card Types"
     TEMPLATES = RESOURCES + "/Templates"
-    F_TEMPLATE = TEMPLATES + "/ProxKy.idml"
-    F_PRINT = TEMPLATES + "/Print.idml"
+    FILE_TEMPLATE = TEMPLATES + "/ProxKy.idml"
+    FILE_PRINT = TEMPLATES + "/Print.idml"
     _WORKING_MEMORY = MAIN + "/Working Memory"
     WORKING_MEMORY_CARD = _WORKING_MEMORY + "/Card"
     WORKING_MEMORY_PRINT = _WORKING_MEMORY + "/Print"
@@ -432,3 +432,18 @@ COLOR_MAPPING = {
     "R": "Magic Red",
     "G": "Magic Green"
 }
+
+# Array containing exactly those text frames that will be resized
+RESIZE_INFORMATION = \
+    {"resize": [
+        [Id_Names.ORACLE],
+        [Id_Names.PLANESWALKER_ORACLE_1, Id_Names.PLANESWALKER_ORACLE_2,
+         Id_Names.PLANESWALKER_ORACLE_3, Id_Names.PLANESWALKER_ORACLE_4],
+        [Id_Names.PLANESWALKER_ORACLE_FINAL],
+        [Id_Names.ADVENTURE_ORACLE_LEFT],
+        [Id_Names.ADVENTURE_ORACLE_RIGHT]
+    ],
+        "condense": [
+            [Id_Names.ARTIST_INFORMATION],
+            [Id_Names.COLLECTOR_INFORMATION],
+        ]}

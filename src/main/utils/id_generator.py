@@ -13,9 +13,9 @@ def generate_ids() -> None:
     """
     open(CONFIG_PATH_ID_FILE, 'w').close()
 
-    with zipfile.ZipFile(Paths.F_TEMPLATE, "r") as archive:
+    with zipfile.ZipFile(Paths.FILE_TEMPLATE, "r") as archive:
         archive.extractall(Paths.WORKING_MEMORY_CARD)
-    with zipfile.ZipFile(Paths.F_PRINT, "r") as archive:
+    with zipfile.ZipFile(Paths.FILE_PRINT, "r") as archive:
         archive.extractall(Paths.WORKING_MEMORY_PRINT)
 
     _fetch_ids("FRONT", CONFIG_FRONT_ID, Id_Names.GROUP_NORMAL)

@@ -1,9 +1,9 @@
 import getopt
 import sys
-from time import sleep
 
 from configuration.variables import SUPPORTED_MODES
-from info.info import show_info, Info_Mode
+from src.main.pipeline import parse_card_list, process_card
+from src.main.utils.info import show_info, Info_Mode
 from src.main.utils.id_generator import generate_ids
 
 
@@ -33,7 +33,10 @@ def main(argv):
         if deck == "":
             show_info("Must provide decklist", mode=Info_Mode.ERROR)
             return
-        print("Hi")
+        card_entries = parse_card_list("data/decks/" + deck + ".txt")
+        for card_entry in card_entries:
+            process_card(card_entry["card"], options=card_entry.get("options"))
+
         # cards = process_decklist("data/decks/" + deck + ".txt")
         # process_cards(cards)
         # process_print(cards)

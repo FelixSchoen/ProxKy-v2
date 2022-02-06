@@ -10,7 +10,7 @@ from src.main.data.card import Card
 
 import requests
 
-from src.main.info.info import show_info, Info_Mode
+from src.main.utils.info import show_info, Info_Mode
 
 
 class Fetcher(ABC):

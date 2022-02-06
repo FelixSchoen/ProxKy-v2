@@ -5,9 +5,12 @@ import zipfile
 
 from src.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, DOUBLE_SIDED_LAYOUTS, Ids, Fonts
 from src.main.data.card import Card
+from src.main.data.fetcher import Fetcher
 from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic, \
     layout_adventure, layout_transparent_body_art
-from src.main.info.info import show_info, Info_Mode
+from src.main.handler.indesign_handler import InDesignHandler
+from src.main.utils.info import show_info, Info_Mode
+from src.main.utils.misc import divide_into_chunks
 from src.main.utils.mtg import get_clean_name, get_card_types
 from src.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
     set_collector_information, set_oracle_text, set_color_indicator, set_type_icon, set_artwork, set_planeswalker_text, \
@@ -46,9 +49,15 @@ def parse_card_list(list_path: str) -> [dict]:
                     else:
                         options[option_match.group("type")] = option_match.group("id")
 
+            fetcher = Fetcher.get_standard_fetcher()
+            fetch_dict = dict(options)
+            fetch_dict["name"] = match.group("name")
+            fetched_card = fetcher.fetch_card(fetch_dict)
+            dictionary["card"] = fetched_card
+
             card_list.append(dictionary)
 
-        return card_list
+    return card_list
 
 
 def process_card(card: Card, options: dict = None) -> None:
@@ -68,7 +77,7 @@ def process_card(card: Card, options: dict = None) -> None:
 
     # Extract XML file
     os.makedirs(path_folder, exist_ok=True)
-    with zipfile.ZipFile(Paths.F_TEMPLATE, "r") as archive:
+    with zipfile.ZipFile(Paths.FILE_TEMPLATE, "r") as archive:
         archive.extractall(Paths.WORKING_MEMORY_CARD)
 
     # Layouts
@@ -78,6 +87,9 @@ def process_card(card: Card, options: dict = None) -> None:
         layout_basic(Id_Sets.ID_SET_FRONT)
 
     # Options
+    if options is None:
+        options = dict()
+
     if "tba" in options:
         if options["tba"] in ["front", "both"]:
             layout_transparent_body_art(Id_Sets.ID_SET_FRONT)
@@ -154,3 +166,48 @@ def process_face(card: Card, id_set: dict, mode: str = None) -> None:
         set_artist(card, id_set)
     if Ids.COLLECTOR_INFORMATION_T in id_set:
         set_collector_information(card, id_set)
+
+
+def process_print(card_entries: [dict]) -> None:
+    cards_to_print = []
+
+    # Determine which cards to print how often
+    for card_entry in card_entries:
+        card = card_entry["card"]
+        for i in range(0, int(card_entry["amount"])):
+            if card.layout in DOUBLE_SIDED_LAYOUTS:
+                cards_to_print.insert(0, card)
+            else:
+                cards_to_print.append(card)
+
+    # Delete old files
+    for filename in os.listdir(Paths.PRINT):
+        file_path = os.path.join(Paths.PRINT, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            show_info("Could not delete file, error: {}".format(e), mode=Info_Mode.ERROR)
+            return
+
+    already_handled_cards = []
+    for i, page in enumerate(list(divide_into_chunks(cards_to_print, 8))):
+        target_file_path = Paths.PRINT + "/page_" + str(i + 1).zfill(2)
+        target_file_path_extension = target_file_path + ".idml"
+
+        # Extract print template
+        os.makedirs(Paths.PRINT, exist_ok=True)
+        with zipfile.ZipFile(Paths.FILE_PRINT, "r") as archive:
+            archive.extractall(Paths.WORKING_MEMORY_PRINT)
+
+        indesign_handler = InDesignHandler()
+
+        for j, card in enumerate(page):
+            clean_name = get_clean_name(card.name)
+
+            # Convert to PDF
+            if card.id not in already_handled_cards:
+                indesign_handler.generate_pdf(card)
+                already_handled_cards.append(card.id)

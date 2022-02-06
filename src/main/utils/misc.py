@@ -1,6 +1,7 @@
 import math
 import os
 import re
+from collections import Generator
 
 
 def mm_to_pt(mm: float) -> float:
@@ -90,3 +91,14 @@ def split_string_reminder(reminder_array) -> [str]:
             text_array.extend(reminder_split)
 
     return text_array
+
+
+def divide_into_chunks(iterable, chunk_size) -> Generator:
+    """
+    Splits up a list into chunks of the given size.
+    :param iterable: A list that should be split up
+    :param chunk_size: The size of the chunks to obtain
+    :return: A generator for the chunks
+    """
+    for i in range(0, len(iterable), chunk_size):
+        yield iterable[i:i + chunk_size]

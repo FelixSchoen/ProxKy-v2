@@ -5,7 +5,7 @@ from win32com import client
 from src.main.configuration.config import CONFIG_INDESIGN_ID
 from src.main.configuration.variables import Paths, Fonts
 from src.main.data.fetcher import ScryfallFetcher
-from src.main.handler.id_handler import InDesignHandler
+from src.main.handler.indesign_handler import InDesignHandler
 from src.main.pipeline import parse_card_list, process_card
 
 VARIETY_CARDS = ["Black Lotus",
@@ -39,7 +39,7 @@ class PipelineTest(unittest.TestCase):
 
     def test_process_card(self):
         fetcher = ScryfallFetcher()
-        card = fetcher.fetch_card({"name": "Black Lotus"})
+        card = fetcher.fetch_card({"name": "Academy Ruins"})
         process_card(card)
         self.assertTrue(card is not None)
 
@@ -47,4 +47,11 @@ class PipelineTest(unittest.TestCase):
         fetcher = ScryfallFetcher()
         card = fetcher.fetch_card({"name": "Gisela, the Broken Blade"})
         process_card(card, {"tba": "back"})
+        self.assertTrue(card is not None)
+
+    def test_generate_pdf(self):
+        fetcher = ScryfallFetcher()
+        card = fetcher.fetch_card({"name": "Academy Ruins"})
+        indesign_handler = InDesignHandler()
+        indesign_handler.generate_pdf(card)
         self.assertTrue(card is not None)
