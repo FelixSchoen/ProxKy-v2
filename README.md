@@ -17,14 +17,9 @@ being [Black Lotus](https://scryfall.com/card/ovnt/2017NA/black-lotus)
 and [The Eldest Reborn](https://scryfall.com/card/c19/131/the-eldest-reborn). Note that these were generated using
 version 1.0 of **ProxKy**.
 
-<img src="data/examples/2017NA%20-%20Black%20Lotus.png" alt="drawing" width="200"/>
-<img src="data/examples/323%20-%20Underground%20Sea.png" alt="drawing" width="200"/>
-<img src="data/examples/56%20-%20Jace,%20the%20Mind%20Sculptor.png" alt="drawing" width="200"/>
-<img src="data/examples/15b%20-%20Brisela,%20Voice%20of%20Nightmares.png" alt="drawing" width="200"/>
-<img src="data/examples/401%20-%20Mountain.png" alt="drawing" width="200"/>
-<img src="data/examples/97%20-%20Murderous%20Rider.png" alt="drawing" width="200"/>
-<img src="data/examples/29%20-%20Paladin%20Class.png" alt="drawing" width="200"/>
-<img src="data/examples/131%20-%20The%20Eldest%20Reborn.png" alt="drawing" width="200"/>
+<img src="data/examples/2017NA%20-%20Black%20Lotus.png" alt="drawing" width="200"/><img src="data/examples/323%20-%20Underground%20Sea.png" alt="drawing" width="200"/><img src="data/examples/56%20-%20Jace,%20the%20Mind%20Sculptor.png" alt="drawing" width="200"/><img src="data/examples/15b%20-%20Brisela,%20Voice%20of%20Nightmares.png" alt="drawing" width="200"/>
+
+<img src="data/examples/401%20-%20Mountain.png" alt="drawing" width="200"/><img src="data/examples/97%20-%20Murderous%20Rider.png" alt="drawing" width="200"/><img src="data/examples/29%20-%20Paladin%20Class.png" alt="drawing" width="200"/><img src="data/examples/131%20-%20The%20Eldest%20Reborn.png" alt="drawing" width="200"/>
 
 Note that the literal and graphical content provided is copyright of Wizards of the Ceast, LLC. All images provded serve
 as fan content, permitted under the WotC fan content policy.
@@ -183,7 +178,6 @@ but different card names. The program will use them for the front- and back face
 Finally, after having created this structure, zip the files and send them to me via any means possible. I will them add
 them to the database, and they will automatically be used for the program. This can be done for any cards where you
 would prefer higher-resolution artwork instead of the (low resolution) Scryfall one.
-
 
 ## License
 
