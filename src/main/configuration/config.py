@@ -1,5 +1,5 @@
 # The root folder
-CONFIG_ROOT_FOLDER = "D:/Games/Magic/ProxKy/v3"
+CONFIG_ROOT_FOLDER = "D:/Games/Magic/ProxKy/ProxKy"
 # The unique windows ID of the InDesign application
 CONFIG_INDESIGN_ID = "InDesign.Application.2022"
 # Whether to print reminder text (this is reminder text)
@@ -12,8 +12,8 @@ CONFIG_CARD_DATA_FETCHER = "scryfall"
 # Internals
 
 # IDs of InDesign spreads
-CONFIG_FRONT_ID = "uce"
-CONFIG_BACK_ID = "u4122"
+CONFIG_FRONT_ID = "u11c"
+CONFIG_BACK_ID = "u1d36"
 CONFIG_PRINT_FRONT_ID = "ue7"
 CONFIG_PRINT_BACK_ID = "u16c"
 # Where to put the file containing generated IDs

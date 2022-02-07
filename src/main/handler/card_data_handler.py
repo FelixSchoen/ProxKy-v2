@@ -269,7 +269,12 @@ def set_modal(card: Card, id_sets: [dict]) -> None:
         else:
             raise NotImplementedError
 
-        line_to_insert = type_display + " — " + face.type_line.replace("Creature — ", "").replace("—", "•")
+        line_to_insert = type_display + " — " + face.type_line.replace("—", "•")
+
+        supertypes = face.type_line.split("—")[0].split(" ")
+        supertypes = list(filter(lambda item: item.strip(), supertypes))
+        if len(supertypes) == 1:
+            line_to_insert = line_to_insert.replace("Creature • ", "")
 
         if len(face.mana_cost) > 0:
             line_to_insert += " • " + face.mana_cost
