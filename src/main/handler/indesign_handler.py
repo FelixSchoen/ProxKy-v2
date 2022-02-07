@@ -1,8 +1,6 @@
 import functools
 import operator
 import os.path
-from time import sleep
-from typing import Type
 
 from win32com import client
 
@@ -20,6 +18,10 @@ def InDesignHandler():
 
 
 class _InDesignHandler:
+    """
+    Singleton that stores the access to the InDesign API.
+    """
+
     _instance = None
 
     def __init__(self) -> None:
@@ -37,6 +39,11 @@ class _InDesignHandler:
         return self.study_document
 
     def get_text_lines(self, data: [([dict], dict)]) -> int:
+        """
+        Returns the amount of lines of the given text when printed.
+        :param data: Dictionary containing information about what to print
+        :return: The amount of lines
+        """
         document = self._get_study_document()
         text_frame = next(x for x in document.TextFrames if x.Name == "Textbox")
         text_frame.Contents = ""
@@ -94,7 +101,11 @@ class _InDesignHandler:
 
         return text_frame.Lines.Count
 
-    def generate_pdf(self, card: Card):
+    def generate_pdf(self, card: Card) -> None:
+        """
+        Creates a PDF from the card
+        :param card: The card to create a PDF for
+        """
         clean_name = get_clean_name(card.name)
         input_path = Paths.DOCUMENTS + "/" + card.set.upper() + "/" + card.collector_number + " - " + clean_name + ".idml"
         output_path_folder = Paths.PDF + "/" + card.set.upper()

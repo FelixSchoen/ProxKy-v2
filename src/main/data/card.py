@@ -7,6 +7,9 @@ from src.main.utils.mtg import get_color_array
 
 
 class Card:
+    """
+    Class representing a Magic: The Gathering card.
+    """
 
     def __init__(self):
         super().__init__()

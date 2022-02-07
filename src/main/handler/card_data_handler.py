@@ -254,10 +254,10 @@ def set_modal(card: Card, id_sets: [dict]) -> None:
     :param card: Card to set the modal for
     :param id_sets: Which ID sets to use
     """
+    show_info("Processing modal...", prefix=card.name)
     for i, id_set in enumerate(id_sets):
         face = card.card_faces[(i + 1) % 2]
 
-        type_display = ""
         if card.layout == "modal_dfc":
             type_display = "MODAL"
         elif card.layout == "transform":

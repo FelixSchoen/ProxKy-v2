@@ -6,6 +6,9 @@ import zipfile
 from src.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, DOUBLE_SIDED_LAYOUTS, Ids, Fonts
 from src.main.data.card import Card
 from src.main.data.fetcher import Fetcher
+from src.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
+    set_collector_information, set_oracle_text, set_color_indicator, set_type_icon, set_artwork, set_planeswalker_text, \
+    set_modal
 from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic, \
     layout_adventure, layout_transparent_body_art, layout_planeswalker
 from src.main.handler.indesign_handler import InDesignHandler
@@ -13,9 +16,6 @@ from src.main.handler.xml_handler import set_pdf
 from src.main.utils.info import show_info, Info_Mode
 from src.main.utils.misc import divide_into_chunks
 from src.main.utils.mtg import get_clean_name, get_card_types
-from src.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
-    set_collector_information, set_oracle_text, set_color_indicator, set_type_icon, set_artwork, set_planeswalker_text, \
-    set_modal
 
 
 def parse_card_list(list_path: str) -> [dict]:
@@ -51,13 +51,12 @@ def parse_card_list(list_path: str) -> [dict]:
                         options[option_match.group("type")] = option_match.group("id")
 
             fetcher = Fetcher.get_standard_fetcher()
-            fetch_dict = dict(options)
-            fetch_dict["name"] = match.group("name")
-            fetched_card = fetcher.fetch_card(fetch_dict)
+            fetched_card = fetcher.fetch_card(dictionary)
             dictionary["card"] = fetched_card
 
             card_list.append(dictionary)
 
+    show_info("Successfully processed card list", mode=Info_Mode.SUCCESS, end_line=True)
     return card_list
 
 
@@ -131,6 +130,7 @@ def process_card(card: Card, options: dict = None) -> None:
     except OSError:
         pass
     os.rename(path_file + ".zip", path_file + ".idml")
+    shutil.rmtree(Paths.WORKING_MEMORY_CARD)
 
     show_info("Successfully processed", prefix=card.name, mode=Info_Mode.SUCCESS, end_line=True)
 
@@ -174,6 +174,10 @@ def process_face(card: Card, id_set: dict, mode: str = None) -> None:
 
 
 def process_print(card_entries: [dict]) -> None:
+    """
+    Handles the printing of the card given in the list.
+    :param card_entries: A list containing dictionaries containing information about the cards to print
+    """
     cards_to_print = []
 
     # Determine which cards to print how often
@@ -212,6 +216,8 @@ def process_print(card_entries: [dict]) -> None:
         indesign_handler = InDesignHandler()
 
         for j, card in enumerate(page):
+            show_info("Processing print...", prefix=card.name)
+
             clean_name = card.collector_number + " - " + get_clean_name(card.name)
 
             # Convert to PDF
@@ -225,6 +231,8 @@ def process_print(card_entries: [dict]) -> None:
             if card.layout in DOUBLE_SIDED_LAYOUTS:
                 set_pdf(Id_Sets.ID_SET_PRINT_BACK[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_BACK[Ids.SPREAD],
                         Paths.PDF + "/" + card.set.upper(), clean_name, page=2)
+
+            show_info("Successfully processed", prefix=card.name, end_line=True)
 
         shutil.make_archive(target_file_path, "zip", Paths.WORKING_MEMORY_PRINT)
         try:

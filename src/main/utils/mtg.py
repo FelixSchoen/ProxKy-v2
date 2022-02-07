@@ -2,6 +2,11 @@ from src.main.configuration.variables import Magic
 
 
 def get_clean_name(card_name: str) -> str:
+    """
+    Returns a cleaned-up version of the card name, not containing illegal characters.
+    :param card_name: The card name to clean up
+    :return: The clean name
+    """
     return card_name.replace("//", "--")
 
 
@@ -21,6 +26,11 @@ def get_color_array(colors: [str]) -> [str]:
 
 
 def get_card_types(card) -> [str]:
+    """
+    Returns the types of the card in an array
+    :param card: The card to obtain the types for
+    :return: The types of the card
+    """
     types = card.type_line.split("—")
     types = list(filter(None, types[0].split(" ")))
     return types

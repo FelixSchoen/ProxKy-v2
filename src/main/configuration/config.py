@@ -17,6 +17,6 @@ CONFIG_BACK_ID = "u4122"
 CONFIG_PRINT_FRONT_ID = "ue7"
 CONFIG_PRINT_BACK_ID = "u16c"
 # Where to put the file containing generated IDs
-CONFIG_PATH_ID_FILE = "./ids.txt"
+CONFIG_PATH_ID_FILE = "./data/ids.txt"
 # API URL from which Scryfall fetcher will fetch data
 API_URL = "https://api.scryfall.com"

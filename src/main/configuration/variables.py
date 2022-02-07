@@ -13,7 +13,7 @@ class Distances:
     ORACLE_TOP = -29.55631007189999
     ORACLE_BOT = ORACLE_TOP + 74.83464566929
     # Space between planeswalker text frames
-    SPACE_PLANESWALKER = 2.125984251969
+    SPACE_PLANESWALKER = mm_to_pt(1.5)
     # How much to shift the elements for the basic layout
     LAYOUT_BASIC_SHIFT = mm_to_pt(30.15)
     # How much to enlarge the artwork in order to have it cover the entire card
@@ -362,7 +362,7 @@ class Regex:
 SUPPORTED_LAYOUTS = ["normal", "modal_dfc", "transform", "split", "flip", "adventure", "class", "saga", "meld",
                      "token", "double_faced_token", "emblem"]
 DOUBLE_SIDED_LAYOUTS = ["modal_dfc", "transform", "meld", "double_faced_token"]
-SUPPORTED_MODES = ["standard", "generate_id"]
+SUPPORTED_MODES = ["standard", "generate_id", "debug"]
 
 # Image types to consider
 IMAGE_TYPES = ["png", "jpg", "jpeg"]

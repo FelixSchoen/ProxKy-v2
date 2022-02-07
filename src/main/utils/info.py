@@ -1,5 +1,4 @@
 import sys
-from enum import Enum
 
 from src.main.configuration.variables import Colors
 
@@ -21,9 +20,8 @@ def show_info(message: str, prefix: str = "ProxKy", mode: Info_Mode = Info_Mode.
     :param mode: How to format the message
     :param normalize_length: Message prefix will be fixed to this size
     """
-    sys.stdout.write("\033[K")
-    print(f"{mode}{_truncate_prefix(prefix, normalize_length)}{Colors.END}{message}",
-          end="\n" if end_line else "\r")
+    print(f"\r{mode}{_truncate_prefix(prefix, normalize_length)}{Colors.END}{message}",
+          end="\n" if end_line else "")
     sys.stdout.flush()
 
 

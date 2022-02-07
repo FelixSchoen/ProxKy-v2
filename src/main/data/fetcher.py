@@ -1,26 +1,34 @@
 from __future__ import annotations
 
-import time
 import json
+import time
 import urllib.parse
 from abc import ABC, abstractmethod
 
-from src.main.configuration.config import CONFIG_CARD_DATA_FETCHER, API_URL
-from src.main.data.card import Card
-
 import requests
 
+from src.main.configuration.config import CONFIG_CARD_DATA_FETCHER, API_URL
+from src.main.data.card import Card
 from src.main.utils.info import show_info, Info_Mode
 
 
 class Fetcher(ABC):
+    """
+    Abstract class that fetches information from a specific source, determined by the specific subclass.
+    """
 
     def __init__(self) -> None:
         super().__init__()
         self._time_last_fetched = 0
+        self._limit = 0
 
     def fetch_card(self, dictionary: dict) -> Card:
-        if (time.time() - self._time_last_fetched) * 1000 < 100:
+        """
+        Fetches a card from a source using the given information.
+        :param dictionary: Contains information about the card to fetch
+        :return: The found card
+        """
+        if (time.time() - self._time_last_fetched) * 1000 < self._limit:
             time.sleep((time.time() - self._time_last_fetched))
             self._time_last_fetched = time.time()
         return self._fetch_card_internal(dictionary)
@@ -31,6 +39,10 @@ class Fetcher(ABC):
 
     @classmethod
     def get_standard_fetcher(cls) -> Fetcher:
+        """
+        Returns the default fetcher.
+        :return: The default fetcher
+        """
         if CONFIG_CARD_DATA_FETCHER == "scryfall":
             return ScryfallFetcher()
         else:
@@ -41,6 +53,7 @@ class ScryfallFetcher(Fetcher):
 
     def __init__(self) -> None:
         super().__init__()
+        self._limit = 100
 
     def _fetch_card_internal(self, dictionary: dict) -> Card | None:
         if "id" in dictionary:

@@ -1,8 +1,9 @@
 from xml.etree import ElementTree
 
+from PIL import Image  # Pillow
+
 from src.main.configuration.variables import Paths, Regex, IMAGE_TYPES
 from src.main.utils.misc import split_string_along_regex
-from PIL import Image  # Pillow
 
 
 def set_text_field(frame_id: str, data: [([dict], dict)]) -> None:
@@ -247,6 +248,14 @@ def set_graphic(frame_id: str, spread_id: str, path: str, filename: str, type_fi
 
 
 def set_pdf(frame_id: str, spread_id: str, path: str, filename: str, page: int = 1) -> None:
+    """
+    Adds a link to a PDF file to the given frame.
+    :param frame_id: The frame where the PDF should be embedded
+    :param spread_id: The spread where the frame occurs
+    :param path: Path to the PDF
+    :param filename: Filename of the PDF
+    :param page: Which page of the PDF to use
+    """
     tree = ElementTree.parse(Paths.WORKING_MEMORY_PRINT + "/Spreads/Spread_" + spread_id + ".xml")
     rectangle = tree.find(".//Rectangle[@Self='" + frame_id + "']")
 

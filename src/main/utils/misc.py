@@ -9,6 +9,11 @@ def mm_to_pt(mm: float) -> float:
 
 
 def check_exists(path) -> bool:
+    """
+    Checks if a file at the given path exists
+    :param path: The path of the file
+    :return: Whether the file exists or not
+    """
     return os.path.exists(path)
 
 
