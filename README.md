@@ -26,7 +26,7 @@ as fan content, permitted under the WotC fan content policy.
 
 ## Changelog
 
-### Version 1.0
+### Version 1.0, 2022-02-07
 
 - Initial release
 
