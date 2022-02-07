@@ -1,1 +1,4 @@
 /VirtualEnv/
+/data/decks/cards.txt
+/.idea/*
+*.pyc
