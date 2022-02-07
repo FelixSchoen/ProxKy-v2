@@ -27,7 +27,7 @@ def show_info(message: str, prefix: str = "ProxKy", mode: Info_Mode = Info_Mode.
 
 def _truncate_prefix(prefix: str, length: int) -> str:
     truncated_prefix = "["
-    truncated_prefix += prefix[:length - 2 - 3] + "..." if len(prefix) - 2 > length else prefix
+    truncated_prefix += prefix[:length - 2 - 1 - 3] + "..." if len(prefix) + 2 + 1 > length else prefix
     truncated_prefix += "]"
 
     for i in range(0, length - len(truncated_prefix)):

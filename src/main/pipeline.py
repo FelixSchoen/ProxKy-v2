@@ -232,7 +232,7 @@ def process_print(card_entries: [dict]) -> None:
                 set_pdf(Id_Sets.ID_SET_PRINT_BACK[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_BACK[Ids.SPREAD],
                         Paths.PDF + "/" + card.set.upper(), clean_name, page=2)
 
-            show_info("Successfully processed", prefix=card.name, end_line=True)
+            show_info("Successfully processed for print", prefix=card.name, end_line=True)
 
         shutil.make_archive(target_file_path, "zip", Paths.WORKING_MEMORY_PRINT)
         try:
