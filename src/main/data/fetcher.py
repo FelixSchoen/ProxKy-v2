@@ -28,9 +28,9 @@ class Fetcher(ABC):
         :param dictionary: Contains information about the card to fetch
         :return: The found card
         """
-        if (time.time() - self._time_last_fetched) * 1000 < self._limit:
-            time.sleep((time.time() - self._time_last_fetched))
-            self._time_last_fetched = time.time()
+        if (time.perf_counter() - self._time_last_fetched) * 1000 < self._limit:
+            time.sleep((time.perf_counter() - self._time_last_fetched))
+            self._time_last_fetched = time.perf_counter()
         return self._fetch_card_internal(dictionary)
 
     @abstractmethod

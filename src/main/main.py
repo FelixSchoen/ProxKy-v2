@@ -1,4 +1,5 @@
 import getopt
+import logging
 import sys
 
 from configuration.variables import SUPPORTED_MODES
@@ -8,6 +9,8 @@ from src.main.utils.info import show_info, Info_Mode
 
 
 def main(argv):
+    config()
+
     mode = ""
     deck = ""
 
@@ -45,6 +48,14 @@ def main(argv):
         pass
     else:
         show_info("Unknown mode", mode=Info_Mode.ERROR, end_line=True)
+
+
+def config() -> None:
+    """
+    Configures certain aspects of the program, e.g., the logging module.
+    """
+    format = "[%(levelname)s] %(asctime)s: %(message)s"
+    logging.basicConfig(format=format)
 
 
 if __name__ == '__main__':
