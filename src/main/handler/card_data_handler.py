@@ -6,7 +6,7 @@ import requests
 
 from src.main.configuration.config import CONFIG_PRINT_REMINDER_TEXT, CONFIG_PRINT_FLAVOR_TEXT
 from src.main.configuration.variables import Ids, Fonts, MANA_MAPPING, Regex, COLOR_MAPPING, Paths, IMAGE_TYPES, \
-    Distances
+    Distances, DOUBLE_SIDED_LAYOUTS
 from src.main.data.card import Card
 from src.main.handler.indesign_handler import InDesignHandler
 from src.main.handler.xml_handler import set_text_field, set_gradient, set_graphic, set_visibility, get_coordinates, \
@@ -194,7 +194,7 @@ def set_planeswalker_text(card: Card, id_set: dict) -> None:
     """
     show_info("Processing planeswalker text...", prefix=card.name)
 
-    _planeswalker_text_handler(id_set, card.oracle_text)
+    _planeswalker_text_handler(id_set, card.oracle_text, double_faced=card.layout in DOUBLE_SIDED_LAYOUTS)
 
 
 def set_value(card: Card, id_set: dict) -> None:
