@@ -30,6 +30,9 @@ def parse_card_list(list_path: str) -> [dict]:
     with open(list_path) as f:
         lines = f.readlines()
         for line in lines:
+            if line[0] == "#" or line.isspace():
+                continue
+
             dictionary = dict()
             options = dict()
             match = re.match(Regex.CARD_ENTRY, line)
@@ -54,7 +57,8 @@ def parse_card_list(list_path: str) -> [dict]:
             fetched_card = fetcher.fetch_card(dictionary)
             dictionary["card"] = fetched_card
 
-            card_list.append(dictionary)
+            if fetched_card is not None:
+                card_list.append(dictionary)
 
     show_info("Successfully processed card list", mode=Info_Mode.SUCCESS, end_line=True)
     return card_list
