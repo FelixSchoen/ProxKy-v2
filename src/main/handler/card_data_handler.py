@@ -437,10 +437,9 @@ def _planeswalker_text_handler(id_set: dict, main: str, double_faced: bool = Fal
             lines[i] = _oracle_text_handler(id_set[Ids.PLANESWALKER_ORACLE_FINAL_T], planeswalker_split[-1][0],
                                             force_justification="LeftAlign")
 
-    top_coordinate = Distances.ORACLE_TOP
+    height_budget = Distances.ORACLE_HEIGHT
     if double_faced:
-        top_coordinate += Distances.MODAL_HEIGHT
-    height_budget = Distances.ORACLE_BOT + abs(top_coordinate)
+        height_budget += Distances.MODAL_HEIGHT
     height_budget -= Distances.SPACE_PLANESWALKER * (amount_boxes - 1)
 
     for i in range(0, amount_boxes):

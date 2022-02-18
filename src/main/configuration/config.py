@@ -12,8 +12,8 @@ CONFIG_CARD_DATA_FETCHER = "scryfall"
 # Internals
 
 # IDs of InDesign spreads
-CONFIG_FRONT_ID = "u11c"
-CONFIG_BACK_ID = "u1d36"
+CONFIG_FRONT_ID = "u119"
+CONFIG_BACK_ID = "u2240"
 CONFIG_PRINT_FRONT_ID = "ue7"
 CONFIG_PRINT_BACK_ID = "u16c"
 # Where to put the file containing generated IDs

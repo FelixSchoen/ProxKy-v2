@@ -11,7 +11,7 @@ from src.main.handler.card_data_handler import set_card_name, set_type_line, set
     set_modal
 from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic, \
     layout_adventure, layout_transparent_body_art, layout_planeswalker
-from src.main.handler.indesign_handler import InDesignHandler
+from src.main.handler.indesign_handler import _InDesignHandler
 from src.main.handler.xml_handler import set_pdf
 from src.main.utils.info import show_info, Info_Mode
 from src.main.utils.misc import divide_into_chunks
@@ -60,15 +60,16 @@ def parse_card_list(list_path: str) -> [dict]:
             if fetched_card is not None:
                 card_list.append(dictionary)
 
-    show_info("Successfully processed card list", mode=Info_Mode.SUCCESS, end_line=True)
+    show_info("Successfully processed card list", end_line=True)
     return card_list
 
 
-def process_card(card: Card, options: dict = None) -> None:
+def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHandler = None) -> None:
     """
     Handles processing of given card, like inserting information and adjusting layouts.
     :param card: The card to process
     :param options: Additional options
+    :param indesign_handler: InDesign handler for converting a card to PDF
     """
     if card.layout not in SUPPORTED_LAYOUTS:
         show_info("Layout not supported", prefix=card.name, mode=Info_Mode.ERROR, end_line=True)
@@ -135,6 +136,10 @@ def process_card(card: Card, options: dict = None) -> None:
         pass
     os.rename(path_file + ".zip", path_file + ".idml")
     shutil.rmtree(Paths.WORKING_MEMORY_CARD)
+
+    # Convert to PDF
+    show_info("Processing PDF...", prefix=card.name)
+    indesign_handler.generate_pdf(card)
 
     show_info("Successfully processed", prefix=card.name, mode=Info_Mode.SUCCESS, end_line=True)
 
@@ -207,8 +212,9 @@ def process_print(card_entries: [dict]) -> None:
             show_info("Could not delete file, error: {}".format(e), mode=Info_Mode.ERROR)
             return
 
-    already_handled_cards = []
     for i, page in enumerate(list(divide_into_chunks(cards_to_print, 8))):
+        show_info("Processing print...")
+
         target_file_path = Paths.PRINT + "/page_" + str(i + 1).zfill(2)
         target_file_path_extension = target_file_path + ".idml"
 
@@ -217,17 +223,8 @@ def process_print(card_entries: [dict]) -> None:
         with zipfile.ZipFile(Paths.FILE_PRINT, "r") as archive:
             archive.extractall(Paths.WORKING_MEMORY_PRINT)
 
-        indesign_handler = InDesignHandler()
-
         for j, card in enumerate(page):
-            show_info("Processing print...", prefix=card.name)
-
             clean_name = card.collector_number + " - " + get_clean_name(card.name)
-
-            # Convert to PDF
-            if card.id not in already_handled_cards:
-                indesign_handler.generate_pdf(card)
-                already_handled_cards.append(card.id)
 
             set_pdf(Id_Sets.ID_SET_PRINT_FRONT[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_FRONT[Ids.SPREAD],
                     Paths.PDF + "/" + card.set.upper(), clean_name)
@@ -236,8 +233,6 @@ def process_print(card_entries: [dict]) -> None:
                 set_pdf(Id_Sets.ID_SET_PRINT_BACK[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_BACK[Ids.SPREAD],
                         Paths.PDF + "/" + card.set.upper(), clean_name, page=2)
 
-            show_info("Successfully processed for print", prefix=card.name, end_line=True)
-
         shutil.make_archive(target_file_path, "zip", Paths.WORKING_MEMORY_PRINT)
         try:
             os.remove(target_file_path_extension)
@@ -245,3 +240,5 @@ def process_print(card_entries: [dict]) -> None:
             pass
         os.rename(target_file_path + ".zip", target_file_path + ".idml")
         shutil.rmtree(Paths.WORKING_MEMORY_PRINT)
+
+        show_info("Successfully processed print", end_line=True)

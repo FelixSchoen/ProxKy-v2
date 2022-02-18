@@ -3,6 +3,7 @@ import logging
 import sys
 
 from configuration.variables import SUPPORTED_MODES
+from src.main.handler.indesign_handler import InDesignHandler
 from src.main.pipeline import parse_card_list, process_card, process_print
 from src.main.utils.id_generator import generate_ids
 from src.main.utils.info import show_info, Info_Mode
@@ -37,8 +38,9 @@ def main(argv):
             show_info("Must provide decklist", mode=Info_Mode.ERROR, end_line=True)
             return
         card_entries = parse_card_list("data/decks/" + deck + ".txt")
+        indesign_handler = InDesignHandler()
         for card_entry in card_entries:
-            process_card(card_entry["card"], options=card_entry.get("options"))
+            process_card(card_entry["card"], options=card_entry.get("options"), indesign_handler=indesign_handler)
         process_print(card_entries)
     elif mode == "generate_id":
         show_info("Generating ID list...")
