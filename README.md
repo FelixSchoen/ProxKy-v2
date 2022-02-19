@@ -70,7 +70,7 @@ made. Multiple arguments can be used for a single card, in this case they need t
 We provide an example of the use of such arguments:
 
 > 1 Black Lotus [set: OVNT]  
-> 1 Lotus Cobra [set: ZNR, cn: 307]  
+> 1 Lotus Cobra [set: ZNR, cnr: 307]  
 > 1 Kozilek, Butcher of Truth [tba: front]  
 > 1 Nicol Bolas, the Ravager [tba: both]  
 > 1 Gisela, the Broken Blade [tba: back]
@@ -88,12 +88,12 @@ uppercase) 3 to 5 letters uniquely identifying a set. Example:
 In this case, the card `Black Lotus` is pulled from the "Vintage Championship" set, which is not its default set when
 searching for it on scryfall.
 
-#### Parameter "cn"
+#### Parameter "cnr"
 
 Using this parameter, we can define the collector's number of a card **in addition to its set**. Note that this **only
 works when also specifying a set**, since collector numbers are not unique across sets. Example:
 
-> 1 Lotus Cobra [set: ZNR, cn: 307]
+> 1 Lotus Cobra [set: ZNR, cnr: 307]
 
 In this case the `Lotus Cobra` card with collector's number 307 in the set Zendikar Rising will be retrieved, which is
 not the standard when searching for it. This card has a special artwork, which will then be used by **ProxKy**.

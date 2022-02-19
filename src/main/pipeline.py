@@ -48,7 +48,7 @@ def parse_card_list(list_path: str) -> [dict]:
 
                 for option in specified_options:
                     option_match = re.match(Regex.CARD_OPTIONS, option)
-                    if option_match.group("type") in ["set", "id", "cn"]:
+                    if option_match.group("type") in ["set", "id", "cnr"]:
                         dictionary[option_match.group("type")] = option_match.group("id")
                     else:
                         options[option_match.group("type")] = option_match.group("id")
@@ -241,4 +241,4 @@ def process_print(card_entries: [dict]) -> None:
         os.rename(target_file_path + ".zip", target_file_path + ".idml")
         shutil.rmtree(Paths.WORKING_MEMORY_PRINT)
 
-        show_info("Successfully processed print", end_line=True)
+    show_info("Successfully processed print", end_line=True)

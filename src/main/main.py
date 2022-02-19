@@ -35,8 +35,7 @@ def main(argv):
 
     if mode == "standard":
         if deck == "":
-            show_info("Must provide decklist", mode=Info_Mode.ERROR, end_line=True)
-            return
+            deck = input("Please enter a deck name: ")
         card_entries = parse_card_list("data/decks/" + deck + ".txt")
         indesign_handler = InDesignHandler()
         for card_entry in card_entries:

@@ -58,14 +58,14 @@ class ScryfallFetcher(Fetcher):
     def _fetch_card_internal(self, dictionary: dict) -> Card | None:
         if "id" in dictionary:
             response = requests.get(API_URL + "/cards/" + urllib.parse.quote(dictionary["id"]))
-        elif "cn" in dictionary:
+        elif "cnr" in dictionary:
             if "set" not in dictionary:
                 show_info("Set not provided", prefix=dictionary.get("name", "Unknown"), mode=Info_Mode.ERROR)
                 return None
 
             response = requests.get(
                 API_URL + "/cards/" + urllib.parse.quote(dictionary["set"].lower()) + "/" + urllib.parse.quote(
-                    dictionary["cn"]))
+                    dictionary["cnr"]))
         elif "set" in dictionary:
             response = requests.get(
                 API_URL + "/cards/named?exact=" + urllib.parse.quote(dictionary["name"]) + "&set=" + urllib.parse.quote(
