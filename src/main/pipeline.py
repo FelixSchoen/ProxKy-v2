@@ -59,6 +59,8 @@ def parse_card_list(list_path: str) -> [dict]:
 
             if fetched_card is not None:
                 card_list.append(dictionary)
+            else:
+                show_info("Could not fetch card", prefix=dictionary["name"], mode=Info_Mode.ERROR, end_line=True)
 
     show_info("Successfully processed card list", end_line=True)
     return card_list
