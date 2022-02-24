@@ -78,4 +78,10 @@ class ScryfallFetcher(Fetcher):
             show_info("Could not fetch card", prefix=dictionary.get("name", "Unknown"), mode=Info_Mode.ERROR)
             return None
 
-        return Card.generate(json.loads(response.text))
+        card = Card.generate(json.loads(response.text))
+
+        if dictionary.get("name") is not None and card.name != dictionary.get("name"):
+            show_info("Fetched card name differs from specified", prefix=dictionary.get("name") + " / " + card.name,
+                      mode=Info_Mode.WARN, end_line=True)
+
+        return card

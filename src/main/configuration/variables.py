@@ -285,12 +285,12 @@ class Id_Sets:
         "id_planeswalker_oracle_final_o": "u2756",
     }
     ID_SET_PRINT_FRONT = {
-        "id_spread": "ue7",
-        "pid_frame_o": ['uf5', 'u114', 'u115', 'u119', 'u118', 'u117', 'u11c', 'u11b'],
+        "id_spread": "ue9",
+        "pid_frame_o": ['u101', 'u100', 'uff', 'ufe', 'ufd', 'ufc', 'ufb', 'ufa'],
     }
     ID_SET_PRINT_BACK = {
-        "id_spread": "u16c",
-        "pid_frame_o": ['u17d', 'u17c', 'u17b', 'u17a', 'u179', 'u178', 'u177', 'u176'],
+        "id_spread": "u102",
+        "pid_frame_o": ['u10f', 'u10e', 'u10d', 'u10c', 'u10b', 'u10a', 'u109', 'u108'],
     }
 
 
@@ -359,7 +359,7 @@ class Regex:
 
 # Supported Actions
 SUPPORTED_LAYOUTS = ["normal", "modal_dfc", "transform", "split", "flip", "adventure", "class", "saga", "meld",
-                     "token", "double_faced_token", "emblem"]
+                     "token", "double_faced_token", "emblem", "reversible_card"]
 DOUBLE_SIDED_LAYOUTS = ["modal_dfc", "transform", "meld", "double_faced_token"]
 SUPPORTED_MODES = ["standard", "generate_id", "debug"]
 
@@ -379,6 +379,7 @@ MANA_MAPPING = {
     "{U/R}": "",
     "{U/P}": "",
     "{2/U}": "",
+    "{G/U/P}": "",
     "{B}": "B",
     "{B/R}": "",
     "{B/G}": "",

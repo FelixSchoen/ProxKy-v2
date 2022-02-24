@@ -128,10 +128,10 @@ ID_SET_BACK = {
 "id_planeswalker_oracle_final_o": "u2756",
 }
 ID_SET_PRINT_FRONT = {
-"id_spread": "ue7",
-"pid_frame_o": ['uf5', 'u114', 'u115', 'u119', 'u118', 'u117', 'u11c', 'u11b'],
+"id_spread": "ue9",
+"pid_frame_o": ['u101', 'u100', 'uff', 'ufe', 'ufd', 'ufc', 'ufb', 'ufa'],
 }
 ID_SET_PRINT_BACK = {
-"id_spread": "u16c",
-"pid_frame_o": ['u17d', 'u17c', 'u17b', 'u17a', 'u179', 'u178', 'u177', 'u176'],
+"id_spread": "u102",
+"pid_frame_o": ['u10f', 'u10e', 'u10d', 'u10c', 'u10b', 'u10a', 'u109', 'u108'],
 }

@@ -16,7 +16,7 @@ from src.main.utils.misc import split_string_along_regex, split_string_reminder,
 from src.main.utils.mtg import sort_mana_array, get_card_types
 
 
-def set_artwork(card: Card, id_set: dict) -> None:
+def set_artwork(card: Card, id_set: dict, card_identifier: str = None) -> None:
     """
     Sets the artwork of a card.
     :param card: Card to set the artwork for
@@ -24,7 +24,11 @@ def set_artwork(card: Card, id_set: dict) -> None:
     """
     show_info("Processing artwork...", prefix=card.name)
 
-    filename = str(card.collector_number) + " - " + card.name
+    identifier = str(card.collector_number)
+    if card_identifier is not None:
+        identifier = card_identifier
+
+    filename = identifier + " - " + card.name
     path = Paths.ARTWORK + "/" + card.set.upper()
     image_type = "na"
 

@@ -18,6 +18,11 @@ from src.main.utils.misc import divide_into_chunks
 from src.main.utils.mtg import get_clean_name, get_card_types
 
 
+class Process_Mode:
+    ADVENTURE = "adventure"
+    REVERSIBLE = "reversible"
+
+
 def parse_card_list(list_path: str) -> [dict]:
     """
     Parses a list of card names and flags, and returns a list of dictionary containing necessary information.
@@ -88,7 +93,7 @@ def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHa
         archive.extractall(Paths.WORKING_MEMORY_CARD)
 
     # Layouts
-    if card.layout not in DOUBLE_SIDED_LAYOUTS:
+    if card.layout not in DOUBLE_SIDED_LAYOUTS and card.layout not in ["reversible_card"]:
         layout_single_faced(Id_Sets.ID_SET_BACK)
 
     # Options
@@ -124,11 +129,14 @@ def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHa
         id_adventure_left[Ids.ORACLE_T] = id_adventure_left[Ids.ADVENTURE_ORACLE_LEFT_T]
 
         process_face(card.card_faces[0], id_adventure_right)
-        process_face(card.card_faces[1], id_adventure_left, mode="adventure")
+        process_face(card.card_faces[1], id_adventure_left, mode=Process_Mode.ADVENTURE)
     elif card.layout in ["token", "emblem"]:
         if card.oracle_text is None or len(card.oracle_text) == 0:
             layout_basic(Id_Sets.ID_SET_FRONT)
         process_face(card, Id_Sets.ID_SET_FRONT)
+    elif card.layout in "reversible_card":
+        process_face(card.card_faces[0], Id_Sets.ID_SET_FRONT, mode=Process_Mode.REVERSIBLE)
+        process_face(card.card_faces[1], Id_Sets.ID_SET_BACK, mode=Process_Mode.REVERSIBLE)
 
     # Packaging
     shutil.make_archive(path_file, "zip", Paths.WORKING_MEMORY_CARD)
@@ -163,12 +171,17 @@ def process_face(card: Card, id_set: dict, mode: str = None) -> None:
 
     # Common Attributes
     if Ids.ARTWORK_O in id_set:
-        set_artwork(card, id_set)
+        if mode == Process_Mode.REVERSIBLE:
+            card_identifier = card.collector_number
+            card_identifier += "a" if id_set == Id_Sets.ID_SET_FRONT else "b"
+            set_artwork(card, id_set, card_identifier=card_identifier)
+        else:
+            set_artwork(card, id_set)
 
     set_type_icon(card, id_set)
-    set_card_name(card, id_set, font_settings=Fonts.TITLE_ADVENTURE if mode == "adventure" else dict())
-    set_type_line(card, id_set, font_settings=Fonts.TYPE_LINE_ADVENTURE if mode == "adventure" else None)
-    set_mana_cost(card, id_set, font_settings=Fonts.MANA_COST_ADVENTURE if mode == "adventure" else None)
+    set_card_name(card, id_set, font_settings=Fonts.TITLE_ADVENTURE if mode == Process_Mode.ADVENTURE else dict())
+    set_type_line(card, id_set, font_settings=Fonts.TYPE_LINE_ADVENTURE if mode == Process_Mode.ADVENTURE else None)
+    set_mana_cost(card, id_set, font_settings=Fonts.MANA_COST_ADVENTURE if mode == Process_Mode.ADVENTURE else None)
     set_color_indicator(card, id_set)
 
     if "Planeswalker" in type_line:

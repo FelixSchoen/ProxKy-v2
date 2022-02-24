@@ -10,7 +10,7 @@ class Info_Mode:
     ERROR = Colors.RED
 
 
-def show_info(message: str, prefix: str = "ProxKy", mode: Info_Mode = Info_Mode.NORMAL, normalize_length=50,
+def show_info(message: str, prefix: str = "ProxKy", mode: str = Info_Mode.NORMAL, normalize_length=50,
               end_line=False) -> None:
     """
     Prints info message to terminal.

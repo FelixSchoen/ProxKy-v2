@@ -14,8 +14,8 @@ CONFIG_CARD_DATA_FETCHER = "scryfall"
 # IDs of InDesign spreads
 CONFIG_FRONT_ID = "u119"
 CONFIG_BACK_ID = "u2240"
-CONFIG_PRINT_FRONT_ID = "ue7"
-CONFIG_PRINT_BACK_ID = "u16c"
+CONFIG_PRINT_FRONT_ID = "ue9"
+CONFIG_PRINT_BACK_ID = "u102"
 # Where to put the file containing generated IDs
 CONFIG_PATH_ID_FILE = "./data/ids.txt"
 # API URL from which Scryfall fetcher will fetch data
