@@ -1,6 +1,5 @@
 import argparse
 import logging
-import sys
 
 from src.main.handler.indesign_handler import InDesignHandler
 from src.main.pipeline import parse_card_list, process_card, process_print
@@ -8,7 +7,7 @@ from src.main.utils.id_generator import generate_ids
 from src.main.utils.info import show_info, Info_Mode
 
 
-def main(argv):
+def main():
     config()
     args = parse_arguments()
 
@@ -63,4 +62,4 @@ def config() -> None:
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main()
