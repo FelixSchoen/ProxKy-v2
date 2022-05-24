@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 
-from src.main.configuration.variables import DOUBLE_SIDED_LAYOUTS, Faces, Regex
+from src.main.configuration.variables import CONVENTIONAL_DOUBLE_SIDED_LAYOUTS, Faces, Regex
 from src.main.utils.mtg import get_color_array
 
 
@@ -114,7 +114,7 @@ class Card:
     def _manage_card_faces(self) -> None:
         for i, face in enumerate(self.card_faces):
             # Add face identifier
-            if self.layout in DOUBLE_SIDED_LAYOUTS:
+            if self.layout in CONVENTIONAL_DOUBLE_SIDED_LAYOUTS:
                 if i == 0:
                     face.side = Faces.FRONT
                 else:

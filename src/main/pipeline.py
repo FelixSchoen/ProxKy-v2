@@ -3,7 +3,8 @@ import re
 import shutil
 import zipfile
 
-from src.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, DOUBLE_SIDED_LAYOUTS, Ids, Fonts
+from src.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, \
+    CONVENTIONAL_DOUBLE_SIDED_LAYOUTS, Ids, Fonts, DOUBLE_SIDED_LAYOUTS
 from src.main.data.card import Card
 from src.main.data.fetcher import Fetcher
 from src.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
@@ -93,7 +94,7 @@ def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHa
         archive.extractall(Paths.WORKING_MEMORY_CARD)
 
     # Layouts
-    if card.layout not in DOUBLE_SIDED_LAYOUTS and card.layout not in ["reversible_card"]:
+    if card.layout not in DOUBLE_SIDED_LAYOUTS:
         layout_single_faced(Id_Sets.ID_SET_BACK)
 
     # Options
@@ -109,7 +110,7 @@ def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHa
     # Processing
     if card.layout in ["normal", "class", "saga"]:
         process_face(card, Id_Sets.ID_SET_FRONT)
-    elif card.layout in DOUBLE_SIDED_LAYOUTS:
+    elif card.layout in CONVENTIONAL_DOUBLE_SIDED_LAYOUTS:
         layout_double_faced([Id_Sets.ID_SET_FRONT, Id_Sets.ID_SET_BACK])
         set_modal(card, [Id_Sets.ID_SET_FRONT, Id_Sets.ID_SET_BACK])
         process_face(card.card_faces[0], Id_Sets.ID_SET_FRONT)

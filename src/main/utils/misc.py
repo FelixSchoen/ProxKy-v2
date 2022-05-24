@@ -1,7 +1,7 @@
 import math
 import os
 import re
-from collections import Generator
+from typing import Generator
 
 
 def mm_to_pt(mm: float) -> float:
