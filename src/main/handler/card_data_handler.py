@@ -6,7 +6,7 @@ import requests
 
 from src.main.configuration.config import CONFIG_PRINT_REMINDER_TEXT, CONFIG_PRINT_FLAVOR_TEXT
 from src.main.configuration.variables import Ids, Fonts, MANA_MAPPING, Regex, COLOR_MAPPING, Paths, IMAGE_TYPES, \
-    Distances, CONVENTIONAL_DOUBLE_SIDED_LAYOUTS
+    Distances, CONVENTIONAL_DOUBLE_SIDED_LAYOUTS, BACKGROUND_COLOR_MAPPING
 from src.main.data.card import Card
 from src.main.handler.indesign_handler import InDesignHandler
 from src.main.handler.xml_handler import set_text_field, set_gradient, set_graphic, set_visibility, get_coordinates, \
@@ -173,7 +173,39 @@ def set_color_indicator(card: Card, id_set: dict) -> None:
     sort_mana_array(colors_to_apply)
     internal_color_name_array = [COLOR_MAPPING[color] for color in colors_to_apply]
 
-    for gradient_id in id_set[Ids.GRADIENTS_O]:
+    for gradient_id in id_set[Ids.COLOR_INDICATOR_GRADIENTS_O]:
+        set_gradient(gradient_id, internal_color_name_array, distance)
+
+
+def set_background_indicator(card: Card, id_set: dict) -> None:
+    """
+    Sets the color of the background.
+    :param card: Card to set the color of the background for
+    :param id_set: Which ID set to use
+    """
+    show_info("Processing background color...", prefix=card.name)
+    # Defines the amount of blur between borders of two colors
+    distance = 15
+    colors_to_apply = []
+
+    if card.color_indicator is not None and len(card.color_indicator) > 0:
+        colors_to_apply = card.color_indicator
+    elif card.colors is not None and len(card.colors) > 0:
+        colors_to_apply = card.colors
+    elif "Land" in card.type_line:
+        colors_to_apply = card.produced_mana
+
+    if "C" in colors_to_apply:
+        colors_to_apply.remove("C")
+
+    if len(colors_to_apply) == 1:
+        colors_to_apply.append(colors_to_apply[0])
+
+    if len(colors_to_apply) == 2:
+        sort_mana_array(colors_to_apply)
+        internal_color_name_array = [BACKGROUND_COLOR_MAPPING[color] for color in colors_to_apply]
+
+        gradient_id = id_set[Ids.BACKGROUND_COLOR_GRADIENTS_O]
         set_gradient(gradient_id, internal_color_name_array, distance)
 
 

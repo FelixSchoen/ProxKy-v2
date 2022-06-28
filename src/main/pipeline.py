@@ -9,7 +9,7 @@ from src.main.data.card import Card
 from src.main.data.fetcher import Fetcher
 from src.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
     set_collector_information, set_oracle_text, set_color_indicator, set_type_icon, set_artwork, set_planeswalker_text, \
-    set_modal
+    set_modal, set_background_indicator
 from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic, \
     layout_adventure, layout_transparent_body_art, layout_planeswalker
 from src.main.handler.indesign_handler import _InDesignHandler
@@ -184,6 +184,7 @@ def process_face(card: Card, id_set: dict, mode: str = None) -> None:
     set_type_line(card, id_set, font_settings=Fonts.TYPE_LINE_ADVENTURE if mode == Process_Mode.ADVENTURE else None)
     set_mana_cost(card, id_set, font_settings=Fonts.MANA_COST_ADVENTURE if mode == Process_Mode.ADVENTURE else None)
     set_color_indicator(card, id_set)
+    set_background_indicator(card, id_set)
 
     if "Planeswalker" in type_line:
         set_planeswalker_text(card, id_set)

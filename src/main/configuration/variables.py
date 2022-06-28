@@ -50,7 +50,8 @@ class Ids:
     GROUP_FOOTER_O = "id_group_footer_o"
 
     # Misc
-    GRADIENTS_O = "id_gradients_o"
+    COLOR_INDICATOR_GRADIENTS_O = "id_color_indicator_gradients_o"
+    BACKGROUND_COLOR_GRADIENTS_O = "id_background_color_gradients_o"
 
     # Header
     NAME_T = "id_name_t"
@@ -165,7 +166,7 @@ class Id_Sets:
         "id_type_line_t": "u700",
         "id_mana_cost_t": "u6ea",
         "id_color_indicator_top_o": "u6e7",
-        "id_gradients_o": ['ue3', 'ue2'],
+        "id_color_indicator_gradients_o": ['ue3', 'ue2'],
         "id_oracle_t": "u6bc",
         "id_oracle_o": "u6ce",
         "id_color_indicator_bot_o": "u6ba",
@@ -177,6 +178,7 @@ class Id_Sets:
         "id_collector_information_o": "u551",
         "id_artwork_o": "u53b",
         "id_backdrop_o": "u53c",
+        "id_background_color_gradients_o": "u2924",
         "id_group_split_o": "u120",
         "id_group_planeswalker_o": "u5f3",
         "id_group_adventure_o": "u582",
@@ -200,7 +202,7 @@ class Id_Sets:
         "id_type_line_t": "u180b",
         "id_mana_cost_t": "u17f4",
         "id_color_indicator_top_o": "u17ef",
-        "id_gradients_o": ['ue1', 'ue2'],
+        "id_color_indicator_gradients_o": ['ue1', 'ue2'],
         "id_oracle_t": "u17c4",
         "id_oracle_o": "u17c0",
         "id_color_indicator_bot_o": "u17bf",
@@ -212,6 +214,7 @@ class Id_Sets:
         "id_collector_information_o": "u1631",
         "id_artwork_o": "u162e",
         "id_backdrop_o": "u162f",
+        "id_background_color_gradients_o": "u2927",
     }
     ID_SET_SPLIT_BOT_FRONT = {
         "id_spread": "u119",
@@ -223,7 +226,7 @@ class Id_Sets:
         "id_type_line_t": "u1a3b",
         "id_mana_cost_t": "u1a23",
         "id_color_indicator_top_o": "u1a1e",
-        "id_gradients_o": ['u223c', 'u223f'],
+        "id_color_indicator_gradients_o": ['u223c', 'u223f'],
         "id_oracle_t": "u19f3",
         "id_oracle_o": "u19f0",
         "id_color_indicator_bot_o": "u19ef",
@@ -235,6 +238,7 @@ class Id_Sets:
         "id_collector_information_o": "u1861",
         "id_artwork_o": "u185e",
         "id_backdrop_o": "u185f",
+        "id_background_color_gradients_o": "u292a",
     }
     ID_SET_FRONT_ADVENTURE = {
         "id_spread": "u119",
@@ -243,7 +247,7 @@ class Id_Sets:
         "id_type_line_t": "u5c7",
         "id_mana_cost_t": "u5b1",
         "id_color_indicator_top_o": "u5af",
-        "id_gradients_o": ['ue4', 'ue4'],
+        "id_color_indicator_gradients_o": ['ue4', 'ue4'],
         "id_adventure_oracle_left_t": "u59a",
         "id_adventure_oracle_left_o": "u5ac",
         "id_adventure_oracle_right_t": "u584",
@@ -259,7 +263,7 @@ class Id_Sets:
         "id_type_line_t": "u2872",
         "id_mana_cost_t": "u285b",
         "id_color_indicator_top_o": "u2856",
-        "id_gradients_o": ['u28ba', 'u2914'],
+        "id_color_indicator_gradients_o": ['u28ba', 'u2914'],
         "id_oracle_t": "u282b",
         "id_oracle_o": "u2828",
         "id_color_indicator_bot_o": "u2827",
@@ -271,6 +275,7 @@ class Id_Sets:
         "id_collector_information_o": "u2698",
         "id_artwork_o": "u2695",
         "id_backdrop_o": "u2696",
+        "id_background_color_gradients_o": "u292f",
         "id_group_split_o": "u2246",
         "id_group_planeswalker_o": "u2755",
         "id_group_adventure_o": "u26df",
@@ -433,6 +438,13 @@ COLOR_MAPPING = {
     "B": "Magic Black",
     "R": "Magic Red",
     "G": "Magic Green"
+}
+BACKGROUND_COLOR_MAPPING = {
+    "W": "Magic White Background",
+    "U": "Magic Blue Background",
+    "B": "Magic Black Background",
+    "R": "Magic Red Background",
+    "G": "Magic Green Background"
 }
 
 # Array containing exactly those text frames that will be resized

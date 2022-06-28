@@ -63,8 +63,8 @@ def _fetch_ids(name, spread, root_element, mode="standard") -> None:
         (Id_Names.TYPE_LINE, Ids.TYPE_LINE_T, "ParentStory"),
         (Id_Names.MANA_COST, Ids.MANA_COST_T, "ParentStory"),
         (Id_Names.COLOR_INDICATOR_TOP, Ids.COLOR_INDICATOR_TOP_O),
-        (Id_Names.COLOR_INDICATOR_TOP, Ids.GRADIENTS_O, "FillColor"),
-        (Id_Names.COLOR_INDICATOR_BOT, Ids.GRADIENTS_O, "FillColor"),
+        (Id_Names.COLOR_INDICATOR_TOP, Ids.COLOR_INDICATOR_GRADIENTS_O, "FillColor"),
+        (Id_Names.COLOR_INDICATOR_BOT, Ids.COLOR_INDICATOR_GRADIENTS_O, "FillColor"),
 
         # Body
         (Id_Names.ORACLE, Ids.ORACLE_T, "ParentStory"),
@@ -80,6 +80,7 @@ def _fetch_ids(name, spread, root_element, mode="standard") -> None:
         (Id_Names.COLLECTOR_INFORMATION, Ids.COLLECTOR_INFORMATION_O),
         (Id_Names.ARTWORK, Ids.ARTWORK_O),
         (Id_Names.BACKDROP, Ids.BACKDROP_O),
+        (Id_Names.BACKDROP, Ids.BACKGROUND_COLOR_GRADIENTS_O, "FillColor"),
     ]
 
     # Ids to add for standard cards
@@ -121,9 +122,9 @@ def _fetch_ids(name, spread, root_element, mode="standard") -> None:
                        (Id_Names.ADVENTURE_TYPE_LINE, Ids.TYPE_LINE_T, "ParentStory"),
                        (Id_Names.ADVENTURE_MANA_COST, Ids.MANA_COST_T, "ParentStory"),
                        (Id_Names.ADVENTURE_COLOR_INDICATOR, Ids.COLOR_INDICATOR_TOP_O),
-                       (Id_Names.ADVENTURE_COLOR_INDICATOR, Ids.GRADIENTS_O, "FillColor"),
+                       (Id_Names.ADVENTURE_COLOR_INDICATOR, Ids.COLOR_INDICATOR_GRADIENTS_O, "FillColor"),
                        # A bit hacky
-                       (Id_Names.ADVENTURE_COLOR_INDICATOR, Ids.GRADIENTS_O, "FillColor"),
+                       (Id_Names.ADVENTURE_COLOR_INDICATOR, Ids.COLOR_INDICATOR_GRADIENTS_O, "FillColor"),
                        (Id_Names.ADVENTURE_ORACLE_LEFT, Ids.ADVENTURE_ORACLE_LEFT_T, "ParentStory"),
                        (Id_Names.ADVENTURE_ORACLE_LEFT, Ids.ADVENTURE_ORACLE_LEFT_O),
                        (Id_Names.ADVENTURE_ORACLE_RIGHT, Ids.ADVENTURE_ORACLE_RIGHT_T, "ParentStory"),
