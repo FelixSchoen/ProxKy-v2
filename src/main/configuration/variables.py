@@ -359,7 +359,7 @@ class Regex:
 
 # Supported Actions
 SUPPORTED_LAYOUTS = ["normal", "modal_dfc", "transform", "split", "flip", "adventure", "class", "saga", "meld",
-                     "token", "double_faced_token", "emblem", "reversible_card"]
+                     "token", "double_faced_token", "emblem", "reversible_card", "leveler"]
 CONVENTIONAL_DOUBLE_SIDED_LAYOUTS = ["modal_dfc", "transform", "meld", "double_faced_token"]
 DOUBLE_SIDED_LAYOUTS = ["reversible_card"]
 DOUBLE_SIDED_LAYOUTS.extend(CONVENTIONAL_DOUBLE_SIDED_LAYOUTS)

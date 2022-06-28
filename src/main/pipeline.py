@@ -54,7 +54,7 @@ def parse_card_list(list_path: str) -> [dict]:
 
                 for option in specified_options:
                     option_match = re.match(Regex.CARD_OPTIONS, option)
-                    if option_match.group("type") in ["set", "id", "cnr"]:
+                    if option_match.group("type") in ["set", "id", "cn"]:
                         dictionary[option_match.group("type")] = option_match.group("id")
                     else:
                         options[option_match.group("type")] = option_match.group("id")
@@ -108,7 +108,7 @@ def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHa
             layout_transparent_body_art(Id_Sets.ID_SET_BACK)
 
     # Processing
-    if card.layout in ["normal", "class", "saga"]:
+    if card.layout in ["normal", "class", "saga", "leveler"]:
         process_face(card, Id_Sets.ID_SET_FRONT)
     elif card.layout in CONVENTIONAL_DOUBLE_SIDED_LAYOUTS:
         layout_double_faced([Id_Sets.ID_SET_FRONT, Id_Sets.ID_SET_BACK])
@@ -135,7 +135,7 @@ def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHa
         if card.oracle_text is None or len(card.oracle_text) == 0:
             layout_basic(Id_Sets.ID_SET_FRONT)
         process_face(card, Id_Sets.ID_SET_FRONT)
-    elif card.layout in "reversible_card":
+    elif card.layout in ["reversible_card"]:
         process_face(card.card_faces[0], Id_Sets.ID_SET_FRONT, mode=Process_Mode.REVERSIBLE)
         process_face(card.card_faces[1], Id_Sets.ID_SET_BACK, mode=Process_Mode.REVERSIBLE)
 
