@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import json
 import re
 
-from src.main.configuration.variables import CONVENTIONAL_DOUBLE_SIDED_LAYOUTS, Faces, Regex
+import requests
+
+from src.main.configuration.variables import Faces, Regex, CONVENTIONAL_DOUBLE_SIDED_LAYOUTS
 from src.main.utils.mtg import get_color_array
 
 
@@ -46,12 +49,14 @@ class Card:
         # Additional Fields
         self.component = None
         self.side = None
+        self.prints = None
 
     @staticmethod
-    def generate(args: dict) -> Card:
+    def generate(args: dict, recurse: bool = True) -> Card:
         """
         Initialises a card object using the provided dictionary.
         :param args: A dictionary containing relevant card information
+        :param recurse: Whether to recursively load included parts such as prints
         """
         card = Card()
 
@@ -80,6 +85,7 @@ class Card:
         card.set = args.get("set")
 
         card.component = args.get("component")
+        card.prints_uri = args.get("prints_search_uri")
 
         # Handle parts and faces
         card.all_parts = []
@@ -106,6 +112,14 @@ class Card:
 
                 card.card_faces.append(card)
                 card.card_faces.append(meld_result)
+
+        # Fetch prints
+        card.prints = []
+        if recurse and args.get("prints_search_uri") is not None:
+            response = json.loads(requests.get(args.get("prints_search_uri")).text)
+
+            for card_data in response["data"]:
+                card.prints.append(Card.generate(card_data, False))
 
         card._manage_card_faces()
 

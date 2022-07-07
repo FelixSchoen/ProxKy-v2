@@ -15,7 +15,7 @@ from src.main.handler.card_layout_handler import layout_single_faced, layout_dou
 from src.main.handler.indesign_handler import _InDesignHandler
 from src.main.handler.xml_handler import set_pdf
 from src.main.utils.info import show_info, Info_Mode
-from src.main.utils.misc import divide_into_chunks
+from src.main.utils.misc import divide_into_chunks, check_artwork_card_exists
 from src.main.utils.mtg import get_clean_name, get_card_types
 
 
@@ -61,6 +61,18 @@ def parse_card_list(list_path: str) -> [dict]:
 
             fetcher = Fetcher.get_standard_fetcher()
             fetched_card = fetcher.fetch_card(dictionary)
+
+            # Check if local artwork exists
+            if not check_artwork_card_exists(fetched_card) \
+                    and any(check_artwork_card_exists(card_print) for card_print in fetched_card.prints) \
+                    and not any(key in dictionary for key in ["set", "id", "cn"]):
+                card_with_artwork = next(
+                    card_print for card_print in fetched_card.prints if check_artwork_card_exists(card_print))
+                dictionary["set"] = None
+                dictionary["cn"] = None
+                dictionary["id"] = card_with_artwork.id
+                fetched_card = fetcher.fetch_card(dictionary)
+
             dictionary["card"] = fetched_card
 
             if fetched_card is not None:
@@ -172,12 +184,10 @@ def process_face(card: Card, id_set: dict, mode: str = None) -> None:
 
     # Common Attributes
     if Ids.ARTWORK_O in id_set:
+        layout = None
         if mode == Process_Mode.REVERSIBLE:
-            card_identifier = card.collector_number
-            card_identifier += "a" if id_set == Id_Sets.ID_SET_FRONT else "b"
-            set_artwork(card, id_set, card_identifier=card_identifier)
-        else:
-            set_artwork(card, id_set)
+            layout = "reversible_card"
+        set_artwork(card, id_set, layout)
 
     set_type_icon(card, id_set)
     set_card_name(card, id_set, font_settings=Fonts.TITLE_ADVENTURE if mode == Process_Mode.ADVENTURE else dict())

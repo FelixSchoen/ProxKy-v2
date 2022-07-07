@@ -17,6 +17,24 @@ def check_exists(path) -> bool:
     return os.path.exists(path)
 
 
+def check_artwork_card_exists(card) -> bool:
+    identifier = str(card.collector_number)
+
+    if card.layout in ["reversible_card"]:
+        identifier += "a"
+
+    filename = identifier + " - " + card.name
+    from src.main.configuration.variables import Paths
+    path = Paths.ARTWORK + "/" + card.set.upper()
+
+    from src.main.configuration.variables import IMAGE_TYPES
+    for possible_image_type in IMAGE_TYPES:
+        if check_exists(path + "/" + filename + "." + possible_image_type):
+            return True
+
+    return False
+
+
 def split_string_along_regex(string, matchers: ([str], str), standard_identifier="normal"):
     """
     Splits a string according to some rules given by the matcher element. Matchers element consists of regex to match,

@@ -6,27 +6,29 @@ import requests
 
 from src.main.configuration.config import CONFIG_PRINT_REMINDER_TEXT, CONFIG_PRINT_FLAVOR_TEXT
 from src.main.configuration.variables import Ids, Fonts, MANA_MAPPING, Regex, COLOR_MAPPING, Paths, IMAGE_TYPES, \
-    Distances, CONVENTIONAL_DOUBLE_SIDED_LAYOUTS, BACKGROUND_COLOR_MAPPING
+    Distances, CONVENTIONAL_DOUBLE_SIDED_LAYOUTS, BACKGROUND_COLOR_MAPPING, Id_Sets
 from src.main.data.card import Card
 from src.main.handler.indesign_handler import InDesignHandler
 from src.main.handler.xml_handler import set_text_field, set_gradient, set_graphic, set_visibility, get_coordinates, \
-    set_coordinates
+    set_coordinates, set_transparency
 from src.main.utils.info import show_info, Info_Mode
 from src.main.utils.misc import split_string_along_regex, split_string_reminder, mm_to_pt, check_exists
 from src.main.utils.mtg import sort_mana_array, get_card_types
 
 
-def set_artwork(card: Card, id_set: dict, card_identifier: str = None) -> None:
+def set_artwork(card: Card, id_set: dict, layout=None) -> None:
     """
     Sets the artwork of a card.
     :param card: Card to set the artwork for
     :param id_set: Which ID set to use
+    :param layout: The layout of the parent card
     """
     show_info("Processing artwork...", prefix=card.name)
 
     identifier = str(card.collector_number)
-    if card_identifier is not None:
-        identifier = card_identifier
+
+    if layout in ["reversible_card"]:
+        identifier += "a" if id_set == Id_Sets.ID_SET_FRONT else "b"
 
     filename = identifier + " - " + card.name
     path = Paths.ARTWORK + "/" + card.set.upper()
@@ -184,6 +186,9 @@ def set_background_indicator(card: Card, id_set: dict) -> None:
     :param id_set: Which ID set to use
     """
     show_info("Processing background color...", prefix=card.name)
+
+    set_transparency(id_set[Ids.BACKDROP_O], id_set[Ids.SPREAD], 85)
+
     # Defines the amount of blur between borders of two colors
     distance = 15
     colors_to_apply = []
