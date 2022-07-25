@@ -14,9 +14,9 @@ from src.main.handler.card_layout_handler import layout_single_faced, layout_dou
     layout_adventure, layout_transparent_body_art, layout_planeswalker
 from src.main.handler.indesign_handler import _InDesignHandler
 from src.main.handler.xml_handler import set_pdf
-from src.main.utils.info import show_info, Info_Mode
-from src.main.utils.misc import divide_into_chunks, check_artwork_card_exists
-from src.main.utils.mtg import get_clean_name, get_card_types
+from src.main.misc.info import show_info, Info_Mode
+from src.main.misc.util import divide_into_chunks, check_artwork_card_exists
+from src.main.misc.mtg import get_clean_name, get_card_types, Type
 
 
 class Process_Mode:
@@ -174,12 +174,12 @@ def process_face(card: Card, id_set: dict, mode: str = None) -> None:
     :param id_set: Which id set to use
     :param mode: Specifies which special mode (e.g., adventure) to use
     """
-    type_line = get_card_types(card)
+    card_types = get_card_types(card)
 
     # Layouts
-    if "Basic" in type_line:
+    if Type.BASIC in card_types:
         layout_basic(id_set)
-    if "Planeswalker" in type_line:
+    if Type.PLANESWALKER in card_types:
         layout_planeswalker(id_set)
 
     # Common Attributes
@@ -194,13 +194,13 @@ def process_face(card: Card, id_set: dict, mode: str = None) -> None:
     set_type_line(card, id_set, font_settings=Fonts.TYPE_LINE_ADVENTURE if mode == Process_Mode.ADVENTURE else None)
     set_mana_cost(card, id_set, font_settings=Fonts.MANA_COST_ADVENTURE if mode == Process_Mode.ADVENTURE else None)
     set_color_indicator(card, id_set)
-    set_background_indicator(card, id_set)
 
-    if "Planeswalker" in type_line:
+    if Type.LAND in card_types and Type.BASIC not in card_types:
+        set_background_indicator(card, id_set)
+    if Type.PLANESWALKER in card_types:
         set_planeswalker_text(card, id_set)
     else:
         set_oracle_text(card, id_set, may_be_centered=card.layout not in ["adventure"])
-
     if Ids.VALUE_T in id_set:
         set_value(card, id_set)
     if Ids.ARTIST_INFORMATION_T in id_set:

@@ -7,8 +7,8 @@ from win32com import client
 from src.main.configuration.config import CONFIG_INDESIGN_ID
 from src.main.configuration.variables import Paths, Fonts, RESIZE_INFORMATION
 from src.main.data.card import Card
-from src.main.utils.info import show_info, Info_Mode
-from src.main.utils.mtg import get_clean_name
+from src.main.misc.info import show_info, Info_Mode
+from src.main.misc.mtg import get_clean_name
 
 
 def InDesignHandler():

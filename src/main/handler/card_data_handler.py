@@ -1,6 +1,7 @@
 import math
 import os
 import re
+from copy import copy
 
 import requests
 
@@ -11,9 +12,9 @@ from src.main.data.card import Card
 from src.main.handler.indesign_handler import InDesignHandler
 from src.main.handler.xml_handler import set_text_field, set_gradient, set_graphic, set_visibility, get_coordinates, \
     set_coordinates, set_transparency
-from src.main.utils.info import show_info, Info_Mode
-from src.main.utils.misc import split_string_along_regex, split_string_reminder, mm_to_pt, check_exists
-from src.main.utils.mtg import sort_mana_array, get_card_types
+from src.main.misc.info import show_info, Info_Mode
+from src.main.misc.util import split_string_along_regex, split_string_reminder, mm_to_pt, check_exists
+from src.main.misc.mtg import sort_mana_array, get_card_types, Type
 
 
 def set_artwork(card: Card, id_set: dict, layout=None) -> None:
@@ -67,22 +68,22 @@ def set_type_icon(card: Card, id_set: dict) -> None:
     """
     show_info("Processing card icon...", prefix=card.name)
 
-    types = get_card_types(card)
-    if "Legendary" in types:
-        types.remove("Legendary")
-    if "Basic" in types:
-        types.remove("Basic")
-    if "Token" in types:
-        types.remove("Token")
-    if "Snow" in types:
-        types.remove("Snow")
+    card_types = get_card_types(card)
+    if Type.LEGENDARY in card_types:
+        card_types.remove(Type.LEGENDARY)
+    if Type.BASIC in card_types:
+        card_types.remove(Type.BASIC)
+    if Type.TOKEN in card_types:
+        card_types.remove(Type.TOKEN)
+    if Type.SNOW in card_types:
+        card_types.remove(Type.SNOW)
 
-    if len(types) != 1:
-        card_type = "Multiple"
+    if len(card_types) != 1:
+        card_type = Type.MULTIPLE
     else:
-        card_type = types[0]
+        card_type = card_types[0]
 
-    set_graphic(id_set[Ids.TYPE_ICON_O], id_set[Ids.SPREAD], Paths.CARD_TYPES, card_type.lower())
+    set_graphic(id_set[Ids.TYPE_ICON_O], id_set[Ids.SPREAD], Paths.CARD_TYPES, card_type.value.lower())
 
 
 def set_card_name(card: Card, id_set: dict, font_settings: dict = None) -> None:
@@ -159,11 +160,11 @@ def set_color_indicator(card: Card, id_set: dict) -> None:
     colors_to_apply = []
 
     if card.color_indicator is not None and len(card.color_indicator) > 0:
-        colors_to_apply = card.color_indicator
+        colors_to_apply = copy(card.color_indicator)
     elif card.colors is not None and len(card.colors) > 0:
-        colors_to_apply = card.colors
+        colors_to_apply = copy(card.colors)
     elif "Land" in card.type_line:
-        colors_to_apply = card.produced_mana
+        colors_to_apply = copy(card.produced_mana)
         if "C" in colors_to_apply:
             colors_to_apply.remove("C")
 
@@ -194,11 +195,11 @@ def set_background_indicator(card: Card, id_set: dict) -> None:
     colors_to_apply = []
 
     if card.color_indicator is not None and len(card.color_indicator) > 0:
-        colors_to_apply = card.color_indicator
+        colors_to_apply = copy(card.color_indicator)
     elif card.colors is not None and len(card.colors) > 0:
-        colors_to_apply = card.colors
+        colors_to_apply = copy(card.colors)
     elif "Land" in card.type_line:
-        colors_to_apply = card.produced_mana
+        colors_to_apply = copy(card.produced_mana)
 
     if "C" in colors_to_apply:
         colors_to_apply.remove("C")

@@ -3,7 +3,7 @@ from xml.etree import ElementTree
 from PIL import Image  # Pillow
 
 from src.main.configuration.variables import Paths, Regex, IMAGE_TYPES
-from src.main.utils.misc import split_string_along_regex
+from src.main.misc.util import split_string_along_regex
 
 
 def set_text_field(frame_id: str, data: [([dict], dict)]) -> None:

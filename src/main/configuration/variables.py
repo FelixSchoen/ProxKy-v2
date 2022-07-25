@@ -3,7 +3,7 @@ import json
 import requests
 
 from src.main.configuration.config import CONFIG_ROOT_FOLDER, API_URL
-from src.main.utils.misc import mm_to_pt
+from src.main.misc.util import mm_to_pt
 
 
 class Distances:

@@ -6,7 +6,7 @@ import re
 import requests
 
 from src.main.configuration.variables import Faces, Regex, CONVENTIONAL_DOUBLE_SIDED_LAYOUTS
-from src.main.utils.mtg import get_color_array
+from src.main.misc.mtg import get_color_array
 
 
 class Card:

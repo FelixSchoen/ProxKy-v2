@@ -1,4 +1,16 @@
+from enum import Enum
+
 from src.main.configuration.variables import Magic
+
+
+class Type(Enum):
+    BASIC = "Basic"
+    PLANESWALKER = "Planeswalker"
+    LAND = "Land"
+    LEGENDARY = "Legendary"
+    TOKEN = "Token"
+    SNOW = "Snow"
+    MULTIPLE = "Multiple"
 
 
 def get_clean_name(card_name: str) -> str:
@@ -31,8 +43,11 @@ def get_card_types(card) -> [str]:
     :param card: The card to obtain the types for
     :return: The types of the card
     """
-    types = card.type_line.split("—")
-    types = list(filter(None, types[0].split(" ")))
+    types_string = card.type_line.split("—")
+    types_string = list(filter(None, types_string[0].split(" ")))
+    types = []
+    for type_string in types_string:
+        types.append(Type(type_string))
     return types
 
 

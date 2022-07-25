@@ -9,7 +9,7 @@ import requests
 
 from src.main.configuration.config import CONFIG_CARD_DATA_FETCHER, API_URL
 from src.main.data.card import Card
-from src.main.utils.info import show_info, Info_Mode
+from src.main.misc.info import show_info, Info_Mode
 
 
 class Fetcher(ABC):
