@@ -96,6 +96,8 @@ class Ids:
     ARTWORK_O = "id_artwork_o"
 
     PRINTING_FRAME_O = "pid_frame_o"
+    PRINTING_PAGE_INDICATOR_T = "pid_page_indicator_t"
+    PRINTING_PAGE_INDICATOR_O = "pid_page_indicator_o"
 
 
 class Id_Names:
@@ -153,6 +155,7 @@ class Id_Names:
 
     # Printing
     P_FRAME = "Frame"
+    P_PAGE_INDICATOR = "Page Indicator"
 
 
 class Id_Sets:
@@ -292,6 +295,7 @@ class Id_Sets:
     ID_SET_PRINT_FRONT = {
         "id_spread": "ue9",
         "pid_frame_o": ['u101', 'u100', 'uff', 'ufe', 'ufd', 'ufc', 'ufb', 'ufa'],
+        "pid_page_indicator_t": "u13a",
     }
     ID_SET_PRINT_BACK = {
         "id_spread": "u102",

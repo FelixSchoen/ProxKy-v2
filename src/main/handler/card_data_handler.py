@@ -69,21 +69,21 @@ def set_type_icon(card: Card, id_set: dict) -> None:
     show_info("Processing card icon...", prefix=card.name)
 
     card_types = get_card_types(card)
-    if Type.LEGENDARY in card_types:
-        card_types.remove(Type.LEGENDARY)
-    if Type.BASIC in card_types:
-        card_types.remove(Type.BASIC)
-    if Type.TOKEN in card_types:
-        card_types.remove(Type.TOKEN)
-    if Type.SNOW in card_types:
-        card_types.remove(Type.SNOW)
+    if Type.LEGENDARY.value in card_types:
+        card_types.remove(Type.LEGENDARY.value)
+    if Type.BASIC.value in card_types:
+        card_types.remove(Type.BASIC.value)
+    if Type.TOKEN.value in card_types:
+        card_types.remove(Type.TOKEN.value)
+    if Type.SNOW.value in card_types:
+        card_types.remove(Type.SNOW.value)
 
     if len(card_types) != 1:
-        card_type = Type.MULTIPLE
+        card_type = Type.MULTIPLE.value
     else:
         card_type = card_types[0]
 
-    set_graphic(id_set[Ids.TYPE_ICON_O], id_set[Ids.SPREAD], Paths.CARD_TYPES, card_type.value.lower())
+    set_graphic(id_set[Ids.TYPE_ICON_O], id_set[Ids.SPREAD], Paths.CARD_TYPES, card_type.lower())
 
 
 def set_card_name(card: Card, id_set: dict, font_settings: dict = None) -> None:

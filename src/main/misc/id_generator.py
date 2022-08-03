@@ -143,6 +143,10 @@ def _fetch_ids(name, spread, root_element, mode="standard") -> None:
         (Id_Names.P_FRAME + " 8", Ids.PRINTING_FRAME_O),
     ]
 
+    names_printing_front = [
+        (Id_Names.P_PAGE_INDICATOR, Ids.PRINTING_PAGE_INDICATOR_T, "ParentStory")
+    ]
+
     names = names_base
 
     # Modes
@@ -152,6 +156,8 @@ def _fetch_ids(name, spread, root_element, mode="standard") -> None:
         names = names_adventure
     elif mode == "printing":
         names = names_printing
+        if spread == CONFIG_PRINT_FRONT_ID:
+            names.extend(names_printing_front)
 
     with open(CONFIG_PATH_ID_FILE, "a") as f:
         print("ID_SET_" + name + " = {", file=f)

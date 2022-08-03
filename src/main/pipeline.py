@@ -9,14 +9,14 @@ from src.main.data.card import Card
 from src.main.data.fetcher import Fetcher
 from src.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
     set_collector_information, set_oracle_text, set_color_indicator, set_type_icon, set_artwork, set_planeswalker_text, \
-    set_modal, set_background_indicator
+    set_modal
 from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic, \
     layout_adventure, layout_transparent_body_art, layout_planeswalker
 from src.main.handler.indesign_handler import _InDesignHandler
-from src.main.handler.xml_handler import set_pdf
+from src.main.handler.xml_handler import set_pdf, set_text_field
 from src.main.misc.info import show_info, Info_Mode
-from src.main.misc.util import divide_into_chunks, check_artwork_card_exists
 from src.main.misc.mtg import get_clean_name, get_card_types, Type
+from src.main.misc.util import divide_into_chunks, check_artwork_card_exists
 
 
 class Process_Mode:
@@ -177,9 +177,9 @@ def process_face(card: Card, id_set: dict, mode: str = None) -> None:
     card_types = get_card_types(card)
 
     # Layouts
-    if Type.BASIC in card_types:
+    if Type.BASIC.value in card_types:
         layout_basic(id_set)
-    if Type.PLANESWALKER in card_types:
+    if Type.PLANESWALKER.value in card_types:
         layout_planeswalker(id_set)
 
     # Common Attributes
@@ -194,10 +194,9 @@ def process_face(card: Card, id_set: dict, mode: str = None) -> None:
     set_type_line(card, id_set, font_settings=Fonts.TYPE_LINE_ADVENTURE if mode == Process_Mode.ADVENTURE else None)
     set_mana_cost(card, id_set, font_settings=Fonts.MANA_COST_ADVENTURE if mode == Process_Mode.ADVENTURE else None)
     set_color_indicator(card, id_set)
+    # set_background_indicator(card, id_set)
 
-    if Type.LAND in card_types and Type.BASIC not in card_types:
-        set_background_indicator(card, id_set)
-    if Type.PLANESWALKER in card_types:
+    if Type.PLANESWALKER.value in card_types:
         set_planeswalker_text(card, id_set)
     else:
         set_oracle_text(card, id_set, may_be_centered=card.layout not in ["adventure"])
@@ -239,7 +238,8 @@ def process_print(card_entries: [dict]) -> None:
             show_info("Could not delete file, error: {}".format(e), mode=Info_Mode.ERROR)
             return
 
-    for i, page in enumerate(list(divide_into_chunks(cards_to_print, 8))):
+    pages = list(divide_into_chunks(cards_to_print, 8))
+    for i, page in enumerate(pages):
         show_info("Processing print...")
 
         target_file_path = Paths.PRINT + "/page_" + str(i + 1).zfill(2)
@@ -250,15 +250,21 @@ def process_print(card_entries: [dict]) -> None:
         with zipfile.ZipFile(Paths.FILE_PRINT, "r") as archive:
             archive.extractall(Paths.WORKING_MEMORY_PRINT)
 
+        # Set cards
         for j, card in enumerate(page):
             clean_name = card.collector_number + " - " + get_clean_name(card.name)
 
             set_pdf(Id_Sets.ID_SET_PRINT_FRONT[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_FRONT[Ids.SPREAD],
-                    Paths.PDF + "/" + card.set.upper(), clean_name)
+                    Paths.PDF + "/" + card.set.upper(), clean_name, root_path=Paths.WORKING_MEMORY_PRINT)
 
             if card.layout in DOUBLE_SIDED_LAYOUTS:
                 set_pdf(Id_Sets.ID_SET_PRINT_BACK[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_BACK[Ids.SPREAD],
-                        Paths.PDF + "/" + card.set.upper(), clean_name, page=2)
+                        Paths.PDF + "/" + card.set.upper(), clean_name, page=2, root_path=Paths.WORKING_MEMORY_PRINT)
+
+        # Set page indicator
+        content_dict = {"content": f"Page {i + 1:02d}/{len(pages):02d}"}
+        set_text_field(Id_Sets.ID_SET_PRINT_FRONT[Ids.PRINTING_PAGE_INDICATOR_T],
+                       [([content_dict], {"justification": "RightAlign"})], root_path=Paths.WORKING_MEMORY_PRINT)
 
         shutil.make_archive(target_file_path, "zip", Paths.WORKING_MEMORY_PRINT)
         try:

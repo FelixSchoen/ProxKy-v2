@@ -6,15 +6,19 @@ from src.main.configuration.variables import Paths, Regex, IMAGE_TYPES
 from src.main.misc.util import split_string_along_regex
 
 
-def set_text_field(frame_id: str, data: [([dict], dict)]) -> None:
+def set_text_field(frame_id: str, data: [([dict], dict)], root_path: str = None) -> None:
     """
     Sets the entire content of a text field, overriding any and all previous values.
     :param frame_id: Frame of the field to set
     :param data: Data to write, in the following format: A list of paragraphs, with a dictionary specifying the
     paragraph options. Each paragraph has a list of dictionaries containing information about the text to set,
     and its properties.
+    :param root_path: Path to the working memory folder
     """
-    tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Stories/Story_" + frame_id + ".xml")
+    if root_path is None:
+        root_path = Paths.WORKING_MEMORY_CARD
+
+    tree = ElementTree.parse(root_path + "/Stories/Story_" + frame_id + ".xml")
     story_element = tree.find(".//Story[1]")
     original_paragraph_element = story_element.find(".ParagraphStyleRange[1]")
     story_element.remove(original_paragraph_element)
@@ -116,7 +120,7 @@ def set_text_field(frame_id: str, data: [([dict], dict)]) -> None:
                         content_element = ElementTree.Element("Br")
                         character_element.append(content_element)
 
-    tree.write(Paths.WORKING_MEMORY_CARD + "/Stories/Story_" + frame_id + ".xml")
+    tree.write(root_path + "/Stories/Story_" + frame_id + ".xml")
 
 
 def set_gradient(gradient_id: str, colors: [str], distance: float = 0) -> None:
@@ -247,16 +251,20 @@ def set_graphic(frame_id: str, spread_id: str, path: str, filename: str, type_fi
     tree.write(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
 
 
-def set_pdf(frame_id: str, spread_id: str, path: str, filename: str, page: int = 1) -> None:
+def set_pdf(frame_id: str, spread_id: str, path: str, filename: str, root_path: str = None, page: int = 1) -> None:
     """
     Adds a link to a PDF file to the given frame.
     :param frame_id: The frame where the PDF should be embedded
     :param spread_id: The spread where the frame occurs
     :param path: Path to the PDF
     :param filename: Filename of the PDF
+    :param root_path: Path to the working memory folder
     :param page: Which page of the PDF to use
     """
-    tree = ElementTree.parse(Paths.WORKING_MEMORY_PRINT + "/Spreads/Spread_" + spread_id + ".xml")
+    if root_path is None:
+        root_path = Paths.WORKING_MEMORY_PRINT
+
+    tree = ElementTree.parse(root_path + "/Spreads/Spread_" + spread_id + ".xml")
     rectangle = tree.find(".//Rectangle[@Self='" + frame_id + "']")
 
     pdf = ElementTree.Element("PDF")
@@ -270,7 +278,7 @@ def set_pdf(frame_id: str, spread_id: str, path: str, filename: str, page: int =
     pdf.append(pdf_attribute)
     pdf.append(link)
 
-    tree.write(Paths.WORKING_MEMORY_PRINT + "/Spreads/Spread_" + spread_id + ".xml")
+    tree.write(root_path + "/Spreads/Spread_" + spread_id + ".xml")
 
 
 def set_visibility(object_id: str, spread_id: str, visible) -> None:

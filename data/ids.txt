@@ -134,6 +134,7 @@ ID_SET_BACK = {
 ID_SET_PRINT_FRONT = {
 "id_spread": "ue9",
 "pid_frame_o": ['u101', 'u100', 'uff', 'ufe', 'ufd', 'ufc', 'ufb', 'ufa'],
+"pid_page_indicator_t": "u13a",
 }
 ID_SET_PRINT_BACK = {
 "id_spread": "u102",
