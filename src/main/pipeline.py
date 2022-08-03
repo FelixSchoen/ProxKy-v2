@@ -218,11 +218,15 @@ def process_print(card_entries: [dict]) -> None:
     # Determine which cards to print how often
     for card_entry in card_entries:
         card = card_entry["card"]
+        options = card_entry["options"]
+        if options is None:
+            options = dict()
+
         for i in range(0, int(card_entry["amount"])):
-            if card.layout in DOUBLE_SIDED_LAYOUTS:
-                cards_to_print.insert(0, card)
+            if card.layout in DOUBLE_SIDED_LAYOUTS or options.get("back", None) == "stock":
+                cards_to_print.insert(0, card_entry)
             else:
-                cards_to_print.append(card)
+                cards_to_print.append(card_entry)
 
     os.makedirs(Paths.PRINT, exist_ok=True)
 
@@ -251,7 +255,11 @@ def process_print(card_entries: [dict]) -> None:
             archive.extractall(Paths.WORKING_MEMORY_PRINT)
 
         # Set cards
-        for j, card in enumerate(page):
+        for j, card_entry in enumerate(page):
+            card = card_entry["card"]
+            options = card_entry["options"]
+            if options is None:
+                options = dict()
             clean_name = card.collector_number + " - " + get_clean_name(card.name)
 
             set_pdf(Id_Sets.ID_SET_PRINT_FRONT[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_FRONT[Ids.SPREAD],
@@ -260,6 +268,9 @@ def process_print(card_entries: [dict]) -> None:
             if card.layout in DOUBLE_SIDED_LAYOUTS:
                 set_pdf(Id_Sets.ID_SET_PRINT_BACK[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_BACK[Ids.SPREAD],
                         Paths.PDF + "/" + card.set.upper(), clean_name, page=2, root_path=Paths.WORKING_MEMORY_PRINT)
+            elif options.get("back", None) == "stock":
+                set_pdf(Id_Sets.ID_SET_PRINT_BACK[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_BACK[Ids.SPREAD],
+                        Paths.TEMPLATES, "Back", root_path=Paths.WORKING_MEMORY_PRINT)
 
         # Set page indicator
         content_dict = {"content": f"Page {i + 1:02d}/{len(pages):02d}"}
