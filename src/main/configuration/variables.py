@@ -316,6 +316,7 @@ class Paths:
     TEMPLATES = RESOURCES + "/Templates"
     FILE_TEMPLATE = TEMPLATES + "/ProxKy.idml"
     FILE_PRINT = TEMPLATES + "/Print.idml"
+    FILE_SANDBOX = TEMPLATES + "/Sandbox.idml"
     _WORKING_MEMORY = MAIN + "/Working Memory"
     WORKING_MEMORY_CARD = _WORKING_MEMORY + "/Card"
     WORKING_MEMORY_PRINT = _WORKING_MEMORY + "/Print"

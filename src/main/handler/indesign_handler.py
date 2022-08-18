@@ -27,16 +27,16 @@ class _InDesignHandler:
     def __init__(self) -> None:
         super().__init__()
         self.app = client.Dispatch(CONFIG_INDESIGN_ID)
-        self.study_document = None
+        self.sandbox_document = None
 
     def __del__(self):
-        if self.study_document is not None:
-            self.study_document.Close(Saving=1852776480)
+        if self.sandbox_document is not None:
+            self.sandbox_document.Close(Saving=1852776480)
 
     def _get_study_document(self):
-        if self.study_document is None:
-            self.study_document = self.app.Open(Paths.TEMPLATES + "/Study.idml")
-        return self.study_document
+        if self.sandbox_document is None:
+            self.sandbox_document = self.app.Open(Paths.FILE_SANDBOX)
+        return self.sandbox_document
 
     def get_text_lines(self, data: [([dict], dict)]) -> int:
         """

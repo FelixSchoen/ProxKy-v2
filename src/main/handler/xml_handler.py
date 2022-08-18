@@ -165,7 +165,7 @@ def set_gradient(gradient_id: str, colors: [str], distance: float = 0) -> None:
 
 
 def set_graphic(frame_id: str, spread_id: str, path: str, filename: str, type_file: str = "svg",
-                mode_scale: str = "fit") -> None:
+                mode_scale: str = "fit", mode_align: str = "center") -> None:
     """
     Fills the given frame with the provided graphic
     :param frame_id: Image frame of the graphic
@@ -174,6 +174,7 @@ def set_graphic(frame_id: str, spread_id: str, path: str, filename: str, type_fi
     :param filename: Name of the file
     :param type_file: Extension of the file
     :param mode_scale: Whether to fit (align with larger side) or stretch (align with smaller side) the image
+    :param mode_align: Where to align the image vertically if it is oversized
     """
     tree = ElementTree.parse(Paths.WORKING_MEMORY_CARD + "/Spreads/Spread_" + spread_id + ".xml")
     frame = tree.find(".//Rectangle[@Self='" + frame_id + "']")
@@ -228,7 +229,9 @@ def set_graphic(frame_id: str, spread_id: str, path: str, filename: str, type_fi
 
     # Distance to move graphic by to fit into center of container
     graphic_position_x = (size_box_x - size_insert_x) / 2 + coordinates[0][0]
-    graphic_position_y = coordinates[0][1] + (size_box_y - size_insert_y) / 2
+    graphic_position_y = coordinates[0][1]
+    if mode_align == "center":
+        graphic_position_y = coordinates[0][1] + (size_box_y - size_insert_y) / 2
 
     graphic.set("ItemTransform",
                 str(factor) + " 0 0 " + str(factor) + " " + str(graphic_position_x) + " " + str(graphic_position_y))
@@ -282,6 +285,15 @@ def set_pdf(frame_id: str, spread_id: str, path: str, filename: str, root_path: 
 
 
 def set_indd(frame_id: str, spread_id: str, path: str, filename: str, root_path: str = None, page: int = 1) -> None:
+    """
+    Adds a link to an indd file to the given frame.
+    :param frame_id: The frame where the indd should be embedded
+    :param spread_id: The spread where the frame occurs
+    :param path: Path to the indd
+    :param filename: Filename of the indd
+    :param root_path: Path to the working memory folder
+    :param page: Which page of the indd use
+    """
     if root_path is None:
         root_path = Paths.WORKING_MEMORY_PRINT
 

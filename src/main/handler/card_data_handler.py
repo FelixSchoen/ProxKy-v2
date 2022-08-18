@@ -57,7 +57,12 @@ def set_artwork(card: Card, id_set: dict, layout=None) -> None:
             image_type = "jpg"
             handler.write(response.content)
 
-    set_graphic(id_set[Ids.ARTWORK_O], id_set[Ids.SPREAD], path, filename, type_file=image_type, mode_scale="stretch")
+    mode_align = "center"
+    if Type.PLANESWALKER.value in get_card_types(card):
+        mode_align = "top"
+
+    set_graphic(id_set[Ids.ARTWORK_O], id_set[Ids.SPREAD], path, filename, type_file=image_type, mode_scale="stretch",
+                mode_align=mode_align)
 
 
 def set_type_icon(card: Card, id_set: dict) -> None:
