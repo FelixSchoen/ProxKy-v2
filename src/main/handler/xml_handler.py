@@ -3,7 +3,7 @@ from xml.etree import ElementTree
 from PIL import Image  # Pillow
 
 from src.main.configuration.variables import Paths, Regex, IMAGE_TYPES
-from src.main.misc.util import split_string_along_regex
+from src.main.misc.util import split_string_along_regex, mm_to_pt
 
 
 def set_text_field(frame_id: str, data: [([dict], dict)], root_path: str = None) -> None:
@@ -268,7 +268,7 @@ def set_pdf(frame_id: str, spread_id: str, path: str, filename: str, root_path: 
     rectangle = tree.find(".//Rectangle[@Self='" + frame_id + "']")
 
     pdf = ElementTree.Element("PDF")
-    pdf.set("ItemTransform", "1 0 0 1 -77.95261341004854 -651.6848968746158")
+    pdf.set("ItemTransform", f"1 0 0 1 -{mm_to_pt(27.5)} -{mm_to_pt(229.9)}")
     pdf_attribute = ElementTree.Element("PDFAttribute")
     pdf_attribute.set("PageNumber", str(page))
     link = ElementTree.Element("Link")
@@ -277,6 +277,26 @@ def set_pdf(frame_id: str, spread_id: str, path: str, filename: str, root_path: 
     rectangle.append(pdf)
     pdf.append(pdf_attribute)
     pdf.append(link)
+
+    tree.write(root_path + "/Spreads/Spread_" + spread_id + ".xml")
+
+
+def set_indd(frame_id: str, spread_id: str, path: str, filename: str, root_path: str = None, page: int = 1) -> None:
+    if root_path is None:
+        root_path = Paths.WORKING_MEMORY_PRINT
+
+    tree = ElementTree.parse(root_path + "/Spreads/Spread_" + spread_id + ".xml")
+    rectangle = tree.find(".//Rectangle[@Self='" + frame_id + "']")
+
+    imported_page = ElementTree.Element("ImportedPage")
+    imported_page.set("PageNumber", str(page))
+    imported_page.set("ImportedPageCrop", "CropBleed")
+    imported_page.set("ItemTransform", f"1 0 0 1 -{mm_to_pt(27.5)} -{mm_to_pt(229.9)}")
+    link = ElementTree.Element("Link")
+    link.set("LinkResourceURI", "file:" + path + "/" + filename + ".indd")
+
+    rectangle.append(imported_page)
+    imported_page.append(link)
 
     tree.write(root_path + "/Spreads/Spread_" + spread_id + ".xml")
 

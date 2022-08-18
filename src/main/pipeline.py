@@ -13,7 +13,7 @@ from src.main.handler.card_data_handler import set_card_name, set_type_line, set
 from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic, \
     layout_adventure, layout_transparent_body_art, layout_planeswalker
 from src.main.handler.indesign_handler import _InDesignHandler
-from src.main.handler.xml_handler import set_pdf, set_text_field
+from src.main.handler.xml_handler import set_pdf, set_text_field, set_indd
 from src.main.misc.info import show_info, Info_Mode
 from src.main.misc.mtg import get_clean_name, get_card_types, Type
 from src.main.misc.util import divide_into_chunks, check_artwork_card_exists
@@ -262,8 +262,8 @@ def process_print(card_entries: [dict]) -> None:
                 options = dict()
             clean_name = card.collector_number + " - " + get_clean_name(card.name)
 
-            set_pdf(Id_Sets.ID_SET_PRINT_FRONT[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_FRONT[Ids.SPREAD],
-                    Paths.PDF + "/" + card.set.upper(), clean_name, root_path=Paths.WORKING_MEMORY_PRINT)
+            set_indd(Id_Sets.ID_SET_PRINT_FRONT[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_FRONT[Ids.SPREAD],
+                    Paths.DOCUMENTS + "/" + card.set.upper(), clean_name, root_path=Paths.WORKING_MEMORY_PRINT)
 
             if card.layout in DOUBLE_SIDED_LAYOUTS:
                 set_pdf(Id_Sets.ID_SET_PRINT_BACK[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_BACK[Ids.SPREAD],

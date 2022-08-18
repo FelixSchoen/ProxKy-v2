@@ -108,10 +108,11 @@ class _InDesignHandler:
         """
         clean_name = get_clean_name(card.name)
         input_path = Paths.DOCUMENTS + "/" + card.set.upper() + "/" + card.collector_number + " - " + clean_name + ".idml"
-        output_path_folder = Paths.PDF + "/" + card.set.upper()
-        output_path_file = output_path_folder + "/" + card.collector_number + " - " + clean_name + ".pdf"
+        output_path_file = Paths.DOCUMENTS + "/" + card.set.upper() + "/" + card.collector_number + " - " + clean_name
+        # output_path_folder = Paths.PDF + "/" + card.set.upper()
+        # output_path_pdf = output_path_folder + "/" + card.collector_number + " - " + clean_name + ".pdf"
 
-        os.makedirs(output_path_folder, exist_ok=True)
+        # os.makedirs(output_path_folder, exist_ok=True)
 
         document = self.app.Open(input_path)
 
@@ -171,9 +172,11 @@ class _InDesignHandler:
                 document.Close(1852776480)
                 return
 
-        pdf_preset = self.app.PDFExportPresets.Item(7)
-        idPDFType = 1952403524
-        idIDMLType = 1768189292
-        document.Export(idPDFType, output_path_file, False, pdf_preset)
-        document.Export(idIDMLType, input_path, False, ForceSave=True)
+        # pdf_preset = self.app.PDFExportPresets.Item(7)
+        # idPDFType = 1952403524
+        # idIDMLType = 1768189292
+        # document.Export(idPDFType, output_path_pdf, False, pdf_preset)
+        # document.Export(idIDMLType, input_path, False, ForceSave=True)
+
+        document.Save(output_path_file)
         document.Close(1852776480)
