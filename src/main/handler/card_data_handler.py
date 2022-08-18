@@ -486,7 +486,7 @@ def _planeswalker_text_handler(id_set: dict, main: str, double_faced: bool = Fal
 
     height_budget = Distances.ORACLE_HEIGHT
     if double_faced:
-        height_budget += Distances.MODAL_HEIGHT
+        height_budget -= Distances.MODAL_HEIGHT
     height_budget -= Distances.SPACE_PLANESWALKER * (amount_boxes - 1)
 
     for i in range(0, amount_boxes):
@@ -498,6 +498,7 @@ def _planeswalker_text_handler(id_set: dict, main: str, double_faced: bool = Fal
         # Leading
         if i == 0 and flag_leading_text:
             object_ids = [id_set[Ids.ORACLE_O]]
+            shift_sum = 0
         # Planeswalker Oracle
         elif int(flag_leading_text) <= i < amount_boxes - int(flag_trailing_text):
             index_planeswalker = i - int(flag_leading_text)
