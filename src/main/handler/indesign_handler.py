@@ -101,10 +101,10 @@ class _InDesignHandler:
 
         return text_frame.Lines.Count
 
-    def generate_pdf(self, card: Card) -> None:
+    def generate_indd(self, card: Card) -> None:
         """
-        Creates a PDF from the card
-        :param card: The card to create a PDF for
+        Creates an indd document from the card
+        :param card: The card to create an indd for
         """
         clean_name = get_clean_name(card.name)
         input_path = Paths.DOCUMENTS + "/" + card.set.upper() + "/" + card.collector_number + " - " + clean_name + ".idml"

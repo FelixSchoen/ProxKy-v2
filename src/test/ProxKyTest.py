@@ -53,5 +53,5 @@ class PipelineTest(unittest.TestCase):
         fetcher = ScryfallFetcher()
         card = fetcher.fetch_card({"name": "Academy Ruins"})
         indesign_handler = InDesignHandler()
-        indesign_handler.generate_pdf(card)
+        indesign_handler.generate_indd(card)
         self.assertTrue(card is not None)

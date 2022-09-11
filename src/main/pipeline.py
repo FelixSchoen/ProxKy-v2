@@ -89,7 +89,7 @@ def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHa
     Handles processing of given card, like inserting information and adjusting layouts.
     :param card: The card to process
     :param options: Additional options
-    :param indesign_handler: InDesign handler for converting a card to PDF
+    :param indesign_handler: InDesign handler for converting a card to indd
     """
     if card.layout not in SUPPORTED_LAYOUTS:
         show_info("Layout not supported", prefix=card.name, mode=Info_Mode.ERROR, end_line=True)
@@ -160,9 +160,9 @@ def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHa
     os.rename(path_file + ".zip", path_file + ".idml")
     shutil.rmtree(Paths.WORKING_MEMORY_CARD)
 
-    # Convert to PDF
-    show_info("Processing PDF...", prefix=card.name)
-    indesign_handler.generate_pdf(card)
+    # Convert to indd
+    show_info("Processing InDesign File...", prefix=card.name)
+    indesign_handler.generate_indd(card)
 
     show_info("Successfully processed", prefix=card.name, mode=Info_Mode.SUCCESS, end_line=True)
 
@@ -266,8 +266,8 @@ def process_print(card_entries: [dict]) -> None:
                     Paths.DOCUMENTS + "/" + card.set.upper(), clean_name, root_path=Paths.WORKING_MEMORY_PRINT)
 
             if card.layout in DOUBLE_SIDED_LAYOUTS:
-                set_pdf(Id_Sets.ID_SET_PRINT_BACK[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_BACK[Ids.SPREAD],
-                        Paths.PDF + "/" + card.set.upper(), clean_name, page=2, root_path=Paths.WORKING_MEMORY_PRINT)
+                set_indd(Id_Sets.ID_SET_PRINT_BACK[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_BACK[Ids.SPREAD],
+                         Paths.DOCUMENTS + "/" + card.set.upper(), clean_name, root_path=Paths.WORKING_MEMORY_PRINT, page=2)
             elif options.get("back", None) == "stock":
                 set_pdf(Id_Sets.ID_SET_PRINT_BACK[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_BACK[Ids.SPREAD],
                         Paths.TEMPLATES, "Back", root_path=Paths.WORKING_MEMORY_PRINT)
