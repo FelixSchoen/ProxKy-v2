@@ -20,6 +20,9 @@ def show_info(message: str, prefix: str = "ProxKy", mode: str = Info_Mode.NORMAL
     :param mode: How to format the message
     :param normalize_length: Message prefix will be fixed to this size
     """
+    if mode == Info_Mode.ERROR:
+        end_line = True
+
     print(f"\r{mode}{_truncate_prefix(prefix, normalize_length)}{Colors.END}{message}",
           end="\n" if end_line else "")
     sys.stdout.flush()

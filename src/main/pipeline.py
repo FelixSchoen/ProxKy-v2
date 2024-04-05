@@ -62,6 +62,10 @@ def parse_card_list(list_path: str) -> [dict]:
             fetcher = Fetcher.get_standard_fetcher()
             fetched_card = fetcher.fetch_card(dictionary)
 
+            if fetched_card is None:
+                show_info("Could not fetch card", prefix=dictionary["name"], mode=Info_Mode.ERROR, end_line=True)
+                continue
+
             # Check if local artwork exists
             if not check_artwork_card_exists(fetched_card) \
                     and any(check_artwork_card_exists(card_print) for card_print in fetched_card.prints) \
@@ -74,11 +78,7 @@ def parse_card_list(list_path: str) -> [dict]:
                 fetched_card = fetcher.fetch_card(dictionary)
 
             dictionary["card"] = fetched_card
-
-            if fetched_card is not None:
-                card_list.append(dictionary)
-            else:
-                show_info("Could not fetch card", prefix=dictionary["name"], mode=Info_Mode.ERROR, end_line=True)
+            card_list.append(dictionary)
 
     show_info("Successfully processed card list", end_line=True)
     return card_list
@@ -263,11 +263,12 @@ def process_print(card_entries: [dict]) -> None:
             clean_name = card.collector_number + " - " + get_clean_name(card.name)
 
             set_indd(Id_Sets.ID_SET_PRINT_FRONT[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_FRONT[Ids.SPREAD],
-                    Paths.DOCUMENTS + "/" + card.set.upper(), clean_name, root_path=Paths.WORKING_MEMORY_PRINT)
+                     Paths.DOCUMENTS + "/" + card.set.upper(), clean_name, root_path=Paths.WORKING_MEMORY_PRINT)
 
             if card.layout in DOUBLE_SIDED_LAYOUTS:
                 set_indd(Id_Sets.ID_SET_PRINT_BACK[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_BACK[Ids.SPREAD],
-                         Paths.DOCUMENTS + "/" + card.set.upper(), clean_name, root_path=Paths.WORKING_MEMORY_PRINT, page=2)
+                         Paths.DOCUMENTS + "/" + card.set.upper(), clean_name, root_path=Paths.WORKING_MEMORY_PRINT,
+                         page=2)
             elif options.get("back", None) == "stock":
                 set_pdf(Id_Sets.ID_SET_PRINT_BACK[Ids.PRINTING_FRAME_O][j], Id_Sets.ID_SET_PRINT_BACK[Ids.SPREAD],
                         Paths.TEMPLATES, "Back", root_path=Paths.WORKING_MEMORY_PRINT)
