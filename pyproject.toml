@@ -1,0 +1,16 @@
+[project]
+name = "proxky"
+version = "1.0"
+authors = [{ name = "Felix Schön", email = "mail@fschoen.com" }]
+description = "A fully-automated proxy generator for 'Magic: The Gathering'"
+readme = "README.md"
+requires-python = ">= 3.11"
+dependencies = [
+    "pywin32",
+    "requests",
+    "pillow"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/FelixSchoen/ProxKy"
+"Bugtracker" = "https://github.com/FelixSchoen/ProxKy/issues"
