@@ -5,16 +5,16 @@ from copy import copy
 
 import requests
 
-from src.main.configuration.config import CONFIG_PRINT_REMINDER_TEXT, CONFIG_PRINT_FLAVOR_TEXT
-from src.main.configuration.variables import Ids, Fonts, MANA_MAPPING, Regex, COLOR_MAPPING, Paths, IMAGE_TYPES, \
+from proxky.main.configuration.config import CONFIG_PRINT_REMINDER_TEXT, CONFIG_PRINT_FLAVOR_TEXT
+from proxky.main.configuration.variables import Ids, Fonts, MANA_MAPPING, Regex, COLOR_MAPPING, Paths, IMAGE_TYPES, \
     Distances, CONVENTIONAL_DOUBLE_SIDED_LAYOUTS, BACKGROUND_COLOR_MAPPING, Id_Sets
-from src.main.data.card import Card
-from src.main.handler.indesign_handler import InDesignHandler
-from src.main.handler.xml_handler import set_text_field, set_gradient, set_graphic, set_visibility, get_coordinates, \
+from proxky.main.data.card import Card
+from proxky.main.handler.indesign_handler import InDesignHandler
+from proxky.main.handler.xml_handler import set_text_field, set_gradient, set_graphic, set_visibility, get_coordinates, \
     set_coordinates, set_transparency
-from src.main.misc.info import show_info, Info_Mode
-from src.main.misc.util import split_string_along_regex, split_string_reminder, mm_to_pt, check_exists
-from src.main.misc.mtg import sort_mana_array, get_card_types, Type
+from proxky.main.misc.info import show_info, Info_Mode
+from proxky.main.misc.util import split_string_along_regex, split_string_reminder, mm_to_pt, check_exists
+from proxky.main.misc.mtg import sort_mana_array, get_card_types, Type
 
 
 def set_artwork(card: Card, id_set: dict, layout=None) -> None:

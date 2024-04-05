@@ -1,10 +1,10 @@
 import argparse
 import logging
 
-from src.main.handler.indesign_handler import InDesignHandler
-from src.main.pipeline import parse_card_list, process_card, process_print
-from src.main.misc.id_generator import generate_ids
-from src.main.misc.info import show_info, Info_Mode
+from proxky.main.handler.indesign_handler import InDesignHandler
+from proxky.main.pipeline import parse_card_list, process_card, process_print
+from proxky.main.misc.id_generator import generate_ids
+from proxky.main.misc.info import show_info, Info_Mode
 
 
 def main():
@@ -13,7 +13,7 @@ def main():
 
     deck = args.deck
 
-    if args.mode == "standard":
+    if args.mode == "generate":
         if deck is None:
             deck = input("Please enter a deck name: ")
 
@@ -42,7 +42,7 @@ def parse_arguments():
     """
     parser = argparse.ArgumentParser(description="Proxy generator for Magic: The Gathering")
 
-    parser.add_argument("mode", choices=["standard", "generate_id", "debug"],
+    parser.add_argument("mode", choices=["generate", "generate_id", "debug"],
                         help="Mode of operation of the program")
     parser.add_argument("--deck", "-d", nargs="?",
                         help="List of cards to parse, if not provided user will be prompted for list of cards at "

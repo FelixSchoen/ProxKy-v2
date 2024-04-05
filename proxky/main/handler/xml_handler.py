@@ -2,8 +2,8 @@ from xml.etree import ElementTree
 
 from PIL import Image  # Pillow
 
-from src.main.configuration.variables import Paths, Regex, IMAGE_TYPES
-from src.main.misc.util import split_string_along_regex, mm_to_pt
+from proxky.main.configuration.variables import Paths, Regex, IMAGE_TYPES
+from proxky.main.misc.util import split_string_along_regex, mm_to_pt
 
 
 def set_text_field(frame_id: str, data: [([dict], dict)], root_path: str = None) -> None:

@@ -7,9 +7,9 @@ from abc import ABC, abstractmethod
 
 import requests
 
-from src.main.configuration.config import CONFIG_CARD_DATA_FETCHER, API_URL
-from src.main.data.card import Card
-from src.main.misc.info import show_info, Info_Mode
+from proxky.main.configuration.config import CONFIG_CARD_DATA_FETCHER, API_URL
+from proxky.main.data.card import Card
+from proxky.main.misc.info import show_info, Info_Mode
 
 
 class Fetcher(ABC):

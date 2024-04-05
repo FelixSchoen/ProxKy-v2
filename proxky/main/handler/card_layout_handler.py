@@ -1,7 +1,7 @@
 import os
 
-from src.main.configuration.variables import Ids, Paths, Distances
-from src.main.handler.xml_handler import set_visibility, get_coordinates, set_coordinates, move, set_transparency
+from proxky.main.configuration.variables import Ids, Paths, Distances
+from proxky.main.handler.xml_handler import set_visibility, get_coordinates, set_coordinates, move, set_transparency
 
 
 def layout_single_faced(id_set: dict) -> None:

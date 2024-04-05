@@ -1,6 +1,6 @@
 import sys
 
-from src.main.configuration.variables import Colors
+from proxky.main.configuration.variables import Colors
 
 
 class Info_Mode:

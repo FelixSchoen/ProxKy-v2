@@ -24,10 +24,10 @@ def check_artwork_card_exists(card) -> bool:
         identifier += "a"
 
     filename = identifier + " - " + card.name
-    from src.main.configuration.variables import Paths
+    from proxky.main.configuration.variables import Paths
     path = Paths.ARTWORK + "/" + card.set.upper()
 
-    from src.main.configuration.variables import IMAGE_TYPES
+    from proxky.main.configuration.variables import IMAGE_TYPES
     for possible_image_type in IMAGE_TYPES:
         if check_exists(path + "/" + filename + "." + possible_image_type):
             return True
@@ -108,7 +108,7 @@ def split_string_reminder(reminder_array) -> [str]:
         if element[1] != "reminder":
             text_array.append(element)
         else:
-            from src.main.configuration.variables import Regex
+            from proxky.main.configuration.variables import Regex
             reminder_split = split_string_along_regex(element[0], Regex.TEMPLATE_MANA,
                                                       standard_identifier="reminder")
             text_array.extend(reminder_split)

@@ -5,8 +5,8 @@ import re
 
 import requests
 
-from src.main.configuration.variables import Faces, Regex, CONVENTIONAL_DOUBLE_SIDED_LAYOUTS
-from src.main.misc.mtg import get_color_array
+from proxky.main.configuration.variables import Faces, Regex, CONVENTIONAL_DOUBLE_SIDED_LAYOUTS
+from proxky.main.misc.mtg import get_color_array
 
 
 class Card:
@@ -102,7 +102,7 @@ class Card:
 
             # Check that card is front side
             if card.id != meld_result_id:
-                from src.main.data.fetcher import Fetcher
+                from proxky.main.data.fetcher import Fetcher
                 fetcher = Fetcher.get_standard_fetcher()
 
                 dictionary = dict()

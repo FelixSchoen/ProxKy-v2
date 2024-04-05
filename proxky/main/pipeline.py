@@ -3,20 +3,20 @@ import re
 import shutil
 import zipfile
 
-from src.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, \
+from proxky.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, \
     CONVENTIONAL_DOUBLE_SIDED_LAYOUTS, Ids, Fonts, DOUBLE_SIDED_LAYOUTS
-from src.main.data.card import Card
-from src.main.data.fetcher import Fetcher
-from src.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
+from proxky.main.data.card import Card
+from proxky.main.data.fetcher import Fetcher
+from proxky.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
     set_collector_information, set_oracle_text, set_color_indicator, set_type_icon, set_artwork, set_planeswalker_text, \
     set_modal
-from src.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic, \
+from proxky.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic, \
     layout_adventure, layout_transparent_body_art, layout_planeswalker
-from src.main.handler.indesign_handler import _InDesignHandler
-from src.main.handler.xml_handler import set_pdf, set_text_field, set_indd
-from src.main.misc.info import show_info, Info_Mode
-from src.main.misc.mtg import get_clean_name, get_card_types, Type
-from src.main.misc.util import divide_into_chunks, check_artwork_card_exists
+from proxky.main.handler.indesign_handler import _InDesignHandler
+from proxky.main.handler.xml_handler import set_pdf, set_text_field, set_indd
+from proxky.main.misc.info import show_info, Info_Mode
+from proxky.main.misc.mtg import get_clean_name, get_card_types, Type
+from proxky.main.misc.util import divide_into_chunks, check_artwork_card_exists
 
 
 class Process_Mode:
