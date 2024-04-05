@@ -12,7 +12,8 @@ from proxky.main.data.card import Card
 from proxky.main.handler.indesign_handler import InDesignHandler
 from proxky.main.handler.xml_handler import set_text_field, set_gradient, set_graphic, set_visibility, get_coordinates, \
     set_coordinates, set_transparency
-from proxky.main.misc.info import show_info, Info_Mode
+from proxky.main.misc.info import show_info
+from proxky.main.misc.enumerations import InfoMode
 from proxky.main.misc.util import split_string_along_regex, split_string_reminder, mm_to_pt, check_exists
 from proxky.main.misc.mtg import sort_mana_array, get_card_types, Type
 
@@ -42,13 +43,13 @@ def set_artwork(card: Card, id_set: dict, layout=None) -> None:
 
     if image_type == "na":
         if "art_crop" not in card.image_uris:
-            show_info("No artwork on Scryfall", prefix=card.name, mode=Info_Mode.ERROR, end_line=True)
+            show_info("No artwork on Scryfall", prefix=card.name, mode=InfoMode.ERROR, end_line=True)
             return
 
         response = requests.get(card.image_uris["art_crop"])
 
         if response.status_code != 200:
-            show_info("Could not download artwork", prefix=card.name, mode=Info_Mode.ERROR, end_line=True)
+            show_info("Could not download artwork", prefix=card.name, mode=InfoMode.ERROR, end_line=True)
             return
 
         os.makedirs(Paths.ARTWORK_DOWNLOADED + "/" + card.set.upper(), exist_ok=True)

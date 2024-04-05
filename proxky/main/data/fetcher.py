@@ -9,7 +9,8 @@ import requests
 
 from proxky.main.configuration.config import CONFIG_CARD_DATA_FETCHER, API_URL
 from proxky.main.data.card import Card
-from proxky.main.misc.info import show_info, Info_Mode
+from proxky.main.misc.info import show_info
+from proxky.main.misc.enumerations import InfoMode
 
 
 class Fetcher(ABC):
@@ -60,7 +61,7 @@ class ScryfallFetcher(Fetcher):
             response = requests.get(API_URL + "/cards/" + urllib.parse.quote(dictionary["id"]))
         elif "cn" in dictionary:
             if "set" not in dictionary:
-                show_info("Set not provided", prefix=dictionary.get("name", "Unknown"), mode=Info_Mode.ERROR)
+                show_info("Set not provided", prefix=dictionary.get("name", "Unknown"), mode=InfoMode.ERROR)
                 return None
 
             response = requests.get(
@@ -75,13 +76,13 @@ class ScryfallFetcher(Fetcher):
                 API_URL + "/cards/named?exact=" + urllib.parse.quote(dictionary["name"]))
 
         if response.status_code != 200:
-            show_info("Could not fetch card", prefix=dictionary.get("name", "Unknown"), mode=Info_Mode.ERROR)
+            show_info("Could not fetch card", prefix=dictionary.get("name", "Unknown"), mode=InfoMode.ERROR)
             return None
 
         card = Card.generate(json.loads(response.text))
 
         if dictionary.get("name") is not None and card.name != dictionary.get("name"):
             show_info("Fetched card name differs from specified", prefix=dictionary.get("name") + " / " + card.name,
-                      mode=Info_Mode.WARN, end_line=True)
+                      mode=InfoMode.WARN, end_line=True)
 
         return card

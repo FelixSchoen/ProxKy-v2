@@ -7,7 +7,8 @@ from win32com import client
 from proxky.main.configuration.config import CONFIG_INDESIGN_ID
 from proxky.main.configuration.variables import Paths, Fonts, RESIZE_INFORMATION
 from proxky.main.data.card import Card
-from proxky.main.misc.info import show_info, Info_Mode
+from proxky.main.misc.info import show_info
+from proxky.main.misc.enumerations import InfoMode
 from proxky.main.misc.mtg import get_clean_name
 
 
@@ -168,7 +169,7 @@ class _InDesignHandler:
             results = process.processResults
 
             if "None" not in results:
-                show_info("Error while running preflight", prefix=card.name, mode=Info_Mode.ERROR)
+                show_info("Error while running preflight", prefix=card.name, mode=InfoMode.ERROR)
                 document.Close(1852776480)
                 return
 

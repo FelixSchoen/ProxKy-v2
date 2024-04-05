@@ -1,16 +1,10 @@
 import sys
 
 from proxky.main.configuration.variables import Colors
+from proxky.main.misc.enumerations import InfoMode
 
 
-class Info_Mode:
-    NORMAL = Colors.END
-    SUCCESS = Colors.GREEN
-    WARN = Colors.ORANGE
-    ERROR = Colors.RED
-
-
-def show_info(message: str, prefix: str = "ProxKy", mode: str = Info_Mode.NORMAL, normalize_length=50,
+def show_info(message: str, prefix: str = "ProxKy", mode: str = InfoMode.NORMAL, normalize_length=50,
               end_line=False) -> None:
     """
     Prints info message to terminal.
@@ -20,7 +14,7 @@ def show_info(message: str, prefix: str = "ProxKy", mode: str = Info_Mode.NORMAL
     :param mode: How to format the message
     :param normalize_length: Message prefix will be fixed to this size
     """
-    if mode == Info_Mode.ERROR:
+    if mode == InfoMode.ERROR:
         end_line = True
 
     print(f"\r{mode}{_truncate_prefix(prefix, normalize_length)}{Colors.END}{message}",

@@ -1,64 +1,60 @@
 import argparse
-import logging
+from pathlib import Path
 
 from proxky.main.handler.indesign_handler import InDesignHandler
-from proxky.main.pipeline import parse_card_list, process_card, process_print
+from proxky.main.misc.enumerations import InfoMode
 from proxky.main.misc.id_generator import generate_ids
-from proxky.main.misc.info import show_info, Info_Mode
+from proxky.main.misc.logging import get_logger
+from proxky.main.pipeline import parse_card_list, process_card, process_print
+
+LOGGER = get_logger()
 
 
 def main():
-    config()
     args = parse_arguments()
 
-    deck = args.deck
+    if args.command == "generate":
+        deck_identifier = args.deck
 
-    if args.mode == "generate":
-        if deck is None:
-            deck = input("Please enter a deck name: ")
+        if deck_identifier is None:
+            deck_identifier = input("Please enter the path to your decklist: ")
 
-        card_entries = parse_card_list("data/decks/" + deck + ".txt")
+        fetched_cards = parse_card_list(Path(__file__).parent.parent.parent.joinpath(args.deck))
+
         indesign_handler = InDesignHandler()
 
-        for card_entry in card_entries:
+        for card_entry in fetched_cards:
             process_card(card_entry["card"], options=card_entry.get("options"), indesign_handler=indesign_handler)
 
-        if not args.no_print:
-            process_print(card_entries)
-    elif args.mode == "generate_id":
-        show_info("Generating ID list...")
+        if not args.disable_print:
+            process_print(fetched_cards)
+
+        return
+    elif args.mode == "internal":
+        LOGGER.info("Generating ID list...")
         generate_ids()
-        show_info("Generated ID list", mode=Info_Mode.SUCCESS, end_line=True)
-    elif args.mode == "debug":
-        pass
+        LOGGER.info("Generated ID list", mode=InfoMode.SUCCESS, end_line=True)
     else:
-        show_info("Unknown mode", mode=Info_Mode.ERROR, end_line=True)
+        LOGGER.info("Unknown mode", mode=InfoMode.ERROR, end_line=True)
 
 
 def parse_arguments():
-    """
-    Parses the program arguments.
-    :return: Parsed arguments
-    """
-    parser = argparse.ArgumentParser(description="Proxy generator for Magic: The Gathering")
+    parser = argparse.ArgumentParser()
+    subparser = parser.add_subparsers(dest="command", required=True)
 
-    parser.add_argument("mode", choices=["generate", "generate_id", "debug"],
-                        help="Mode of operation of the program")
-    parser.add_argument("--deck", "-d", nargs="?",
-                        help="List of cards to parse, if not provided user will be prompted for list of cards at "
-                             "runtime")
-    parser.add_argument("--no_print", "-np", action="store_true", help="Disables generation of the print templates")
+    # Generate
+    parser_generate = subparser.add_parser("generate")
+    parser_generate.add_argument("--deck", "-d",
+                                 type=str,
+                                 help="Specify a decklist for which proxies will be created. If not provided user will be prompted for decklist at runtime.")
+    parser_generate.add_argument("--disable-print", help="Disables generation of print templates")
+
+    # Internal
+    parser_internal = subparser.add_parser("internal")
+    parser_internal.add_argument("--generate-ids")
 
     args = parser.parse_args()
     return args
-
-
-def config() -> None:
-    """
-    Configures certain aspects of the program, e.g., the logging module.
-    """
-    format = "[%(levelname)s] %(asctime)s: %(message)s"
-    logging.basicConfig(format=format)
 
 
 if __name__ == '__main__':

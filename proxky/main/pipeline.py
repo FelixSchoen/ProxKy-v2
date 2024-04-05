@@ -2,6 +2,7 @@ import os
 import re
 import shutil
 import zipfile
+from pathlib import Path
 
 from proxky.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, \
     CONVENTIONAL_DOUBLE_SIDED_LAYOUTS, Ids, Fonts, DOUBLE_SIDED_LAYOUTS
@@ -14,7 +15,8 @@ from proxky.main.handler.card_layout_handler import layout_single_faced, layout_
     layout_adventure, layout_transparent_body_art, layout_planeswalker
 from proxky.main.handler.indesign_handler import _InDesignHandler
 from proxky.main.handler.xml_handler import set_pdf, set_text_field, set_indd
-from proxky.main.misc.info import show_info, Info_Mode
+from proxky.main.misc.info import show_info
+from proxky.main.misc.enumerations import InfoMode
 from proxky.main.misc.mtg import get_clean_name, get_card_types, Type
 from proxky.main.misc.util import divide_into_chunks, check_artwork_card_exists
 
@@ -24,7 +26,7 @@ class Process_Mode:
     REVERSIBLE = "reversible"
 
 
-def parse_card_list(list_path: str) -> [dict]:
+def parse_card_list(list_path: Path) -> [dict]:
     """
     Parses a list of card names and flags, and returns a list of dictionary containing necessary information.
     :param list_path: Path to the decklist
@@ -63,7 +65,7 @@ def parse_card_list(list_path: str) -> [dict]:
             fetched_card = fetcher.fetch_card(dictionary)
 
             if fetched_card is None:
-                show_info("Could not fetch card", prefix=dictionary["name"], mode=Info_Mode.ERROR, end_line=True)
+                show_info("Could not fetch card", prefix=dictionary["name"], mode=InfoMode.ERROR, end_line=True)
                 continue
 
             # Check if local artwork exists
@@ -92,7 +94,7 @@ def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHa
     :param indesign_handler: InDesign handler for converting a card to indd
     """
     if card.layout not in SUPPORTED_LAYOUTS:
-        show_info("Layout not supported", prefix=card.name, mode=Info_Mode.ERROR, end_line=True)
+        show_info("Layout not supported", prefix=card.name, mode=InfoMode.ERROR, end_line=True)
         return
 
     # Setup folders
@@ -164,7 +166,7 @@ def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHa
     show_info("Processing InDesign File...", prefix=card.name)
     indesign_handler.generate_indd(card)
 
-    show_info("Successfully processed", prefix=card.name, mode=Info_Mode.SUCCESS, end_line=True)
+    show_info("Successfully processed", prefix=card.name, mode=InfoMode.SUCCESS, end_line=True)
 
 
 def process_face(card: Card, id_set: dict, mode: str = None) -> None:
@@ -239,7 +241,7 @@ def process_print(card_entries: [dict]) -> None:
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
         except Exception as e:
-            show_info("Could not delete file, error: {}".format(e), mode=Info_Mode.ERROR)
+            show_info("Could not delete file, error: {}".format(e), mode=InfoMode.ERROR)
             return
 
     pages = list(divide_into_chunks(cards_to_print, 8))

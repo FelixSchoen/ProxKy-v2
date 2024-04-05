@@ -1,7 +1,7 @@
 # The root folder
 CONFIG_ROOT_FOLDER = "D:/Games/Magic/ProxKy/ProxKy"
 # The unique windows ID of the InDesign application
-CONFIG_INDESIGN_ID = "InDesign.Application.2023"
+CONFIG_INDESIGN_ID = "InDesign.Application.2024"
 # Whether to print reminder text (this is reminder text)
 CONFIG_PRINT_REMINDER_TEXT = True
 # Whether to print flavor text (flavor text is stuff like lore, ...)
