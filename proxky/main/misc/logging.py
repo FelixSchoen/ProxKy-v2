@@ -1,5 +1,6 @@
-import logging
 import logging.config
+
+import logging
 
 loggers: dict = dict()
 
@@ -30,6 +31,20 @@ def get_logger(logger_designation: str = "proxky") -> logging.Logger:
         loggers[logger_designation] = logging.getLogger(logger_designation)
 
     return loggers[logger_designation]
+
+
+def format_message_cardname(cardname: str, message: str):
+    def _truncate_prefix(prefix: str, length: int) -> str:
+        truncated_prefix = "["
+        truncated_prefix += prefix[:length - 2 - 1 - 3] + "..." if len(prefix) + 2 + 1 > length else prefix
+        truncated_prefix += "]"
+
+        for i in range(0, length - len(truncated_prefix)):
+            truncated_prefix += " "
+
+        return truncated_prefix
+
+    return f"{_truncate_prefix(cardname, 50)}{message}"
 
 
 setup()

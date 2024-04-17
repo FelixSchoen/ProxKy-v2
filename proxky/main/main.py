@@ -19,15 +19,20 @@ def main():
         if deck_identifier is None:
             deck_identifier = input("Please enter the path to your decklist: ")
 
-        fetched_cards = parse_card_list(Path(__file__).parent.parent.parent.joinpath(args.deck))
+        LOGGER.info("Retrieving card information...")
+        fetched_cards = parse_card_list(Path(__file__).parent.parent.parent.joinpath(deck_identifier))
 
         indesign_handler = InDesignHandler()
 
+        LOGGER.info("Processing cards...")
         for card_entry in fetched_cards:
             process_card(card_entry["card"], options=card_entry.get("options"), indesign_handler=indesign_handler)
+        LOGGER.info("Successfully processed cards")
 
+        LOGGER.info("Processing print...")
         if not args.disable_print:
             process_print(fetched_cards)
+            LOGGER.info("Successfully processed print")
 
         return
     elif args.mode == "internal":

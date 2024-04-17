@@ -7,10 +7,11 @@ from win32com import client
 from proxky.main.configuration.config import CONFIG_INDESIGN_ID
 from proxky.main.configuration.variables import Paths, Fonts, RESIZE_INFORMATION
 from proxky.main.data.card import Card
-from proxky.main.misc.info import show_info
 from proxky.main.misc.enumerations import InfoMode
+from proxky.main.misc.logging import get_logger, format_message_cardname
 from proxky.main.misc.mtg import get_clean_name
 
+LOGGER = get_logger()
 
 def InDesignHandler():
     if _InDesignHandler._instance is None:
@@ -110,10 +111,6 @@ class _InDesignHandler:
         clean_name = get_clean_name(card.name)
         input_path = Paths.DOCUMENTS + "/" + card.set.upper() + "/" + card.collector_number + " - " + clean_name + ".idml"
         output_path_file = Paths.DOCUMENTS + "/" + card.set.upper() + "/" + card.collector_number + " - " + clean_name
-        # output_path_folder = Paths.PDF + "/" + card.set.upper()
-        # output_path_pdf = output_path_folder + "/" + card.collector_number + " - " + clean_name + ".pdf"
-
-        # os.makedirs(output_path_folder, exist_ok=True)
 
         document = self.app.Open(input_path)
 
@@ -169,15 +166,9 @@ class _InDesignHandler:
             results = process.processResults
 
             if "None" not in results:
-                show_info("Error while running preflight", prefix=card.name, mode=InfoMode.ERROR)
+                LOGGER.error(format_message_cardname(card.name, "Error while running preflight"))
                 document.Close(1852776480)
                 return
-
-        # pdf_preset = self.app.PDFExportPresets.Item(7)
-        # idPDFType = 1952403524
-        # idIDMLType = 1768189292
-        # document.Export(idPDFType, output_path_pdf, False, pdf_preset)
-        # document.Export(idIDMLType, input_path, False, ForceSave=True)
 
         document.Save(output_path_file)
         document.Close(1852776480)

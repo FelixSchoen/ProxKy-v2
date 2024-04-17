@@ -11,19 +11,17 @@ from proxky.main.data.fetcher import Fetcher
 from proxky.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
     set_collector_information, set_oracle_text, set_color_indicator, set_type_icon, set_artwork, set_planeswalker_text, \
     set_modal
-from proxky.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, layout_basic, \
+from proxky.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, \
+    layout_basic, \
     layout_adventure, layout_transparent_body_art, layout_planeswalker
 from proxky.main.handler.indesign_handler import _InDesignHandler
 from proxky.main.handler.xml_handler import set_pdf, set_text_field, set_indd
-from proxky.main.misc.info import show_info
-from proxky.main.misc.enumerations import InfoMode
+from proxky.main.misc.enumerations import ProcessMode
+from proxky.main.misc.logging import get_logger, format_message_cardname
 from proxky.main.misc.mtg import get_clean_name, get_card_types, Type
 from proxky.main.misc.util import divide_into_chunks, check_artwork_card_exists
 
-
-class Process_Mode:
-    ADVENTURE = "adventure"
-    REVERSIBLE = "reversible"
+LOGGER = get_logger()
 
 
 def parse_card_list(list_path: Path) -> [dict]:
@@ -32,7 +30,6 @@ def parse_card_list(list_path: Path) -> [dict]:
     :param list_path: Path to the decklist
     :return: The parsed data
     """
-    show_info("Processing card list...")
     card_list = []
 
     with open(list_path) as f:
@@ -65,7 +62,7 @@ def parse_card_list(list_path: Path) -> [dict]:
             fetched_card = fetcher.fetch_card(dictionary)
 
             if fetched_card is None:
-                show_info("Could not fetch card", prefix=dictionary["name"], mode=InfoMode.ERROR, end_line=True)
+                LOGGER.error(f"Could not fetch {dictionary['name']}")
                 continue
 
             # Check if local artwork exists
@@ -82,7 +79,6 @@ def parse_card_list(list_path: Path) -> [dict]:
             dictionary["card"] = fetched_card
             card_list.append(dictionary)
 
-    show_info("Successfully processed card list", end_line=True)
     return card_list
 
 
@@ -93,8 +89,10 @@ def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHa
     :param options: Additional options
     :param indesign_handler: InDesign handler for converting a card to indd
     """
+    LOGGER.info(format_message_cardname(card.name, "Processing..."))
+
     if card.layout not in SUPPORTED_LAYOUTS:
-        show_info("Layout not supported", prefix=card.name, mode=InfoMode.ERROR, end_line=True)
+        LOGGER.error(format_message_cardname(card.name, f"Layout not supported: {card.layout}"))
         return
 
     # Setup folders
@@ -144,14 +142,14 @@ def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHa
         id_adventure_left[Ids.ORACLE_T] = id_adventure_left[Ids.ADVENTURE_ORACLE_LEFT_T]
 
         process_face(card.card_faces[0], id_adventure_right)
-        process_face(card.card_faces[1], id_adventure_left, mode=Process_Mode.ADVENTURE)
+        process_face(card.card_faces[1], id_adventure_left, mode=ProcessMode.ADVENTURE)
     elif card.layout in ["token", "emblem"]:
         if card.oracle_text is None or len(card.oracle_text) == 0:
             layout_basic(Id_Sets.ID_SET_FRONT)
         process_face(card, Id_Sets.ID_SET_FRONT)
     elif card.layout in ["reversible_card"]:
-        process_face(card.card_faces[0], Id_Sets.ID_SET_FRONT, mode=Process_Mode.REVERSIBLE)
-        process_face(card.card_faces[1], Id_Sets.ID_SET_BACK, mode=Process_Mode.REVERSIBLE)
+        process_face(card.card_faces[0], Id_Sets.ID_SET_FRONT, mode=ProcessMode.REVERSIBLE)
+        process_face(card.card_faces[1], Id_Sets.ID_SET_BACK, mode=ProcessMode.REVERSIBLE)
 
     # Packaging
     shutil.make_archive(path_file, "zip", Paths.WORKING_MEMORY_CARD)
@@ -163,10 +161,9 @@ def process_card(card: Card, options: dict = None, indesign_handler: _InDesignHa
     shutil.rmtree(Paths.WORKING_MEMORY_CARD)
 
     # Convert to indd
-    show_info("Processing InDesign File...", prefix=card.name)
     indesign_handler.generate_indd(card)
 
-    show_info("Successfully processed", prefix=card.name, mode=InfoMode.SUCCESS, end_line=True)
+    LOGGER.info(format_message_cardname(card.name, "Successfully processed"))
 
 
 def process_face(card: Card, id_set: dict, mode: str = None) -> None:
@@ -187,14 +184,14 @@ def process_face(card: Card, id_set: dict, mode: str = None) -> None:
     # Common Attributes
     if Ids.ARTWORK_O in id_set:
         layout = None
-        if mode == Process_Mode.REVERSIBLE:
+        if mode == ProcessMode.REVERSIBLE:
             layout = "reversible_card"
         set_artwork(card, id_set, layout)
 
     set_type_icon(card, id_set)
-    set_card_name(card, id_set, font_settings=Fonts.TITLE_ADVENTURE if mode == Process_Mode.ADVENTURE else dict())
-    set_type_line(card, id_set, font_settings=Fonts.TYPE_LINE_ADVENTURE if mode == Process_Mode.ADVENTURE else None)
-    set_mana_cost(card, id_set, font_settings=Fonts.MANA_COST_ADVENTURE if mode == Process_Mode.ADVENTURE else None)
+    set_card_name(card, id_set, font_settings=Fonts.TITLE_ADVENTURE if mode == ProcessMode.ADVENTURE else dict())
+    set_type_line(card, id_set, font_settings=Fonts.TYPE_LINE_ADVENTURE if mode == ProcessMode.ADVENTURE else None)
+    set_mana_cost(card, id_set, font_settings=Fonts.MANA_COST_ADVENTURE if mode == ProcessMode.ADVENTURE else None)
     set_color_indicator(card, id_set)
     # set_background_indicator(card, id_set)
 
@@ -241,13 +238,11 @@ def process_print(card_entries: [dict]) -> None:
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
         except Exception as e:
-            show_info("Could not delete file, error: {}".format(e), mode=InfoMode.ERROR)
+            LOGGER.error(f"Could not delete file: {e}")
             return
 
     pages = list(divide_into_chunks(cards_to_print, 8))
     for i, page in enumerate(pages):
-        show_info("Processing print...")
-
         target_file_path = Paths.PRINT + "/page_" + str(i + 1).zfill(2)
         target_file_path_extension = target_file_path + ".idml"
 
@@ -287,5 +282,3 @@ def process_print(card_entries: [dict]) -> None:
             pass
         os.rename(target_file_path + ".zip", target_file_path + ".idml")
         shutil.rmtree(Paths.WORKING_MEMORY_PRINT)
-
-    show_info("Successfully processed print", end_line=True)

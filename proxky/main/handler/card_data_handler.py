@@ -12,10 +12,12 @@ from proxky.main.data.card import Card
 from proxky.main.handler.indesign_handler import InDesignHandler
 from proxky.main.handler.xml_handler import set_text_field, set_gradient, set_graphic, set_visibility, get_coordinates, \
     set_coordinates, set_transparency
-from proxky.main.misc.info import show_info
 from proxky.main.misc.enumerations import InfoMode
-from proxky.main.misc.util import split_string_along_regex, split_string_reminder, mm_to_pt, check_exists
+from proxky.main.misc.logging import get_logger, format_message_cardname
 from proxky.main.misc.mtg import sort_mana_array, get_card_types, Type
+from proxky.main.misc.util import split_string_along_regex, split_string_reminder, mm_to_pt, check_exists
+
+LOGGER = get_logger()
 
 
 def set_artwork(card: Card, id_set: dict, layout=None) -> None:
@@ -25,8 +27,6 @@ def set_artwork(card: Card, id_set: dict, layout=None) -> None:
     :param id_set: Which ID set to use
     :param layout: The layout of the parent card
     """
-    show_info("Processing artwork...", prefix=card.name)
-
     identifier = str(card.collector_number)
 
     if layout in ["reversible_card"]:
@@ -43,13 +43,13 @@ def set_artwork(card: Card, id_set: dict, layout=None) -> None:
 
     if image_type == "na":
         if "art_crop" not in card.image_uris:
-            show_info("No artwork on Scryfall", prefix=card.name, mode=InfoMode.ERROR, end_line=True)
+            LOGGER.error(format_message_cardname(card.name, "No artwork on Scryfall"))
             return
 
         response = requests.get(card.image_uris["art_crop"])
 
         if response.status_code != 200:
-            show_info("Could not download artwork", prefix=card.name, mode=InfoMode.ERROR, end_line=True)
+            LOGGER.error(format_message_cardname(card.name, "Could not download artwork"))
             return
 
         os.makedirs(Paths.ARTWORK_DOWNLOADED + "/" + card.set.upper(), exist_ok=True)
@@ -72,8 +72,6 @@ def set_type_icon(card: Card, id_set: dict) -> None:
     :param card: Card to set the icon for
     :param id_set: Which ID set to use
     """
-    show_info("Processing card icon...", prefix=card.name)
-
     card_types = get_card_types(card)
     if Type.LEGENDARY.value in card_types:
         card_types.remove(Type.LEGENDARY.value)
@@ -99,8 +97,6 @@ def set_card_name(card: Card, id_set: dict, font_settings: dict = None) -> None:
     :param id_set: Which ID set to use
     :param font_settings: Overrides the standard font settings
     """
-    show_info("Processing card name...", prefix=card.name)
-
     content_dict = {"content": card.name}
     content_dict.update(Fonts.TITLE)
     if font_settings is not None:
@@ -121,7 +117,6 @@ def set_type_line(card: Card, id_set: dict, font_settings: dict = None) -> None:
     :param id_set: Which ID set to use
     :param font_settings: Overrides the standard font settings
     """
-    show_info("Processing type line...", prefix=card.name)
     content_dict = {"content": card.type_line.replace("—", "•")}
     content_dict.update(Fonts.TYPE_LINE)
     if font_settings is not None:
@@ -136,8 +131,6 @@ def set_mana_cost(card: Card, id_set: dict, font_settings: dict = None) -> None:
     :param id_set: Which ID set to use
     :param font_settings: Overrides the standard font settings
     """
-    show_info("Processing mana cost...", prefix=card.name)
-
     content_dict = dict()
     content_dict.update(Fonts.MANA_COST)
     if font_settings is not None:
@@ -160,7 +153,6 @@ def set_color_indicator(card: Card, id_set: dict) -> None:
     :param card: Card to set the color indicators for
     :param id_set: Which ID set to use
     """
-    show_info("Processing color indicator...", prefix=card.name)
     # Defines the amount of blur between borders of two colors
     distance = 0
     colors_to_apply = []
@@ -192,8 +184,6 @@ def set_background_indicator(card: Card, id_set: dict) -> None:
     :param card: Card to set the color of the background for
     :param id_set: Which ID set to use
     """
-    show_info("Processing background color...", prefix=card.name)
-
     set_transparency(id_set[Ids.BACKDROP_O], id_set[Ids.SPREAD], 85)
 
     # Defines the amount of blur between borders of two colors
@@ -228,8 +218,6 @@ def set_oracle_text(card: Card, id_set: dict, may_be_centered: bool = True) -> N
     :param id_set: Which ID set to use
     :param may_be_centered: Whether the text may be centered if it is below a certain amount of lines
     """
-    show_info("Processing oracle text...", prefix=card.name)
-
     _oracle_text_handler(id_set[Ids.ORACLE_T], card.oracle_text, flavor=card.flavor_text,
                          force_justification="LeftAlign" if not may_be_centered else None)
 
@@ -240,8 +228,6 @@ def set_planeswalker_text(card: Card, id_set: dict) -> None:
     :param card: Card to set the planeswalker text for
     :param id_set: Which ID set to use
     """
-    show_info("Processing planeswalker text...", prefix=card.name)
-
     _planeswalker_text_handler(id_set, card.oracle_text, double_faced=card.layout in CONVENTIONAL_DOUBLE_SIDED_LAYOUTS)
 
 
@@ -251,8 +237,6 @@ def set_value(card: Card, id_set: dict) -> None:
     :param card: Card to set the value for
     :param id_set: Which ID set to use
     """
-    show_info("Processing value...", prefix=card.name)
-
     content_dict = dict()
     content_dict.update(Fonts.VALUE)
 
@@ -273,7 +257,6 @@ def set_artist(card: Card, id_set: dict) -> None:
     :param card: Card to set the artist for
     :param id_set: Which ID set to use
     """
-    show_info("Processing artist...", prefix=card.name)
     content_dict = {"content": card.artist}
     content_dict.update(Fonts.META)
     set_text_field(id_set[Ids.ARTIST_INFORMATION_T], [([content_dict], None)])
@@ -285,8 +268,6 @@ def set_collector_information(card: Card, id_set: dict) -> None:
     :param card: Card to set the collector information for
     :param id_set: Which ID set to use
     """
-    show_info("Processing collector information...", prefix=card.name)
-
     content = card.collector_number.zfill(3) + " • " + card.set.upper() + " • " + card.rarity.upper()[0]
     if card.side is not None:
         content = card.side.upper() + " • " + content
@@ -302,7 +283,6 @@ def set_modal(card: Card, id_sets: [dict]) -> None:
     :param card: Card to set the modal for
     :param id_sets: Which ID sets to use
     """
-    show_info("Processing modal...", prefix=card.name)
     for i, id_set in enumerate(id_sets):
         face = card.card_faces[(i + 1) % 2]
 

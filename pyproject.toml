@@ -1,6 +1,6 @@
 [project]
 name = "proxky"
-version = "1.0"
+version = "1.1-beta.1"
 authors = [{ name = "Felix Schön", email = "mail@fschoen.com" }]
 description = "A fully-automated proxy generator for 'Magic: The Gathering'"
 readme = "README.md"

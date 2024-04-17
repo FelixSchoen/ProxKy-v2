@@ -8,3 +8,8 @@ class InfoMode(enum.Enum):
     SUCCESS = Colors.GREEN
     WARN = Colors.ORANGE
     ERROR = Colors.RED
+
+
+class ProcessMode(enum.Enum):
+    ADVENTURE = "adventure"
+    REVERSIBLE = "reversible"
