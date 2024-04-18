@@ -1,7 +1,7 @@
 import unittest
 
-from proxky.main.data.fetcher import ScryfallFetcher
-from proxky.main.handler.indesign_handler import InDesignHandler
+from proxky.data.fetcher import ScryfallFetcher
+from proxky.handler.indesign_handler import InDesignHandler
 from proxky.main.pipeline import parse_card_list, process_card
 
 VARIETY_CARDS = ["Black Lotus",

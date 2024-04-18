@@ -2,8 +2,8 @@ import json
 
 import requests
 
-from proxky.main.configuration.config import CONFIG_ROOT_FOLDER, API_URL
-from proxky.main.misc.util import mm_to_pt
+from proxky.configuration.config import CONFIG_ROOT_FOLDER, API_URL
+from proxky.misc.util import mm_to_pt
 
 
 class Distances:

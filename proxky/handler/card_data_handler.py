@@ -5,17 +5,16 @@ from copy import copy
 
 import requests
 
-from proxky.main.configuration.config import CONFIG_PRINT_REMINDER_TEXT, CONFIG_PRINT_FLAVOR_TEXT
-from proxky.main.configuration.variables import Ids, Fonts, MANA_MAPPING, Regex, COLOR_MAPPING, Paths, IMAGE_TYPES, \
+from proxky.configuration.config import CONFIG_PRINT_REMINDER_TEXT, CONFIG_PRINT_FLAVOR_TEXT
+from proxky.configuration.variables import Ids, Fonts, MANA_MAPPING, Regex, COLOR_MAPPING, Paths, IMAGE_TYPES, \
     Distances, CONVENTIONAL_DOUBLE_SIDED_LAYOUTS, BACKGROUND_COLOR_MAPPING, Id_Sets
-from proxky.main.data.card import Card
-from proxky.main.handler.indesign_handler import InDesignHandler
-from proxky.main.handler.xml_handler import set_text_field, set_gradient, set_graphic, set_visibility, get_coordinates, \
+from proxky.data.card import Card
+from proxky.handler.indesign_handler import InDesignHandler
+from proxky.handler.xml_handler import set_text_field, set_gradient, set_graphic, set_visibility, get_coordinates, \
     set_coordinates, set_transparency
-from proxky.main.misc.enumerations import InfoMode
-from proxky.main.misc.logging import get_logger, format_message_cardname
-from proxky.main.misc.mtg import sort_mana_array, get_card_types, Type
-from proxky.main.misc.util import split_string_along_regex, split_string_reminder, mm_to_pt, check_exists
+from proxky.misc.logging import get_logger, format_message_cardname
+from proxky.misc.mtg import sort_mana_array, get_card_types, Type
+from proxky.misc.util import split_string_along_regex, split_string_reminder, mm_to_pt, check_exists
 
 LOGGER = get_logger()
 

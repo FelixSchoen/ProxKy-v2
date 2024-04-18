@@ -4,22 +4,22 @@ import shutil
 import zipfile
 from pathlib import Path
 
-from proxky.main.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, \
+from proxky.configuration.variables import Regex, SUPPORTED_LAYOUTS, Paths, Id_Sets, \
     CONVENTIONAL_DOUBLE_SIDED_LAYOUTS, Ids, Fonts, DOUBLE_SIDED_LAYOUTS
-from proxky.main.data.card import Card
-from proxky.main.data.fetcher import Fetcher
-from proxky.main.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
+from proxky.data.card import Card
+from proxky.data.fetcher import Fetcher
+from proxky.handler.card_data_handler import set_card_name, set_type_line, set_mana_cost, set_value, set_artist, \
     set_collector_information, set_oracle_text, set_color_indicator, set_type_icon, set_artwork, set_planeswalker_text, \
     set_modal
-from proxky.main.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, \
+from proxky.handler.card_layout_handler import layout_single_faced, layout_double_faced, layout_split, \
     layout_basic, \
     layout_adventure, layout_transparent_body_art, layout_planeswalker
-from proxky.main.handler.indesign_handler import _InDesignHandler
-from proxky.main.handler.xml_handler import set_pdf, set_text_field, set_indd
-from proxky.main.misc.enumerations import ProcessMode
-from proxky.main.misc.logging import get_logger, format_message_cardname
-from proxky.main.misc.mtg import get_clean_name, get_card_types, Type
-from proxky.main.misc.util import divide_into_chunks, check_artwork_card_exists
+from proxky.handler.indesign_handler import _InDesignHandler
+from proxky.handler.xml_handler import set_pdf, set_text_field, set_indd
+from proxky.misc.enumerations import ProcessMode
+from proxky.misc.logging import get_logger, format_message_cardname
+from proxky.misc.mtg import get_clean_name, get_card_types, Type
+from proxky.misc.util import divide_into_chunks, check_artwork_card_exists
 
 LOGGER = get_logger()
 
@@ -31,6 +31,7 @@ def parse_card_list(list_path: Path) -> [dict]:
     :return: The parsed data
     """
     card_list = []
+    fetcher = Fetcher.get_standard_fetcher()
 
     with open(list_path) as f:
         lines = f.readlines()
@@ -58,7 +59,6 @@ def parse_card_list(list_path: Path) -> [dict]:
                     else:
                         options[option_match.group("type")] = option_match.group("id")
 
-            fetcher = Fetcher.get_standard_fetcher()
             fetched_card = fetcher.fetch_card(dictionary)
 
             if fetched_card is None:

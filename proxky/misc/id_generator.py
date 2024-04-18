@@ -2,9 +2,9 @@ import shutil
 import zipfile
 from xml.etree import ElementTree
 
-from proxky.main.configuration.config import CONFIG_PATH_ID_FILE, CONFIG_FRONT_ID, CONFIG_BACK_ID, CONFIG_PRINT_FRONT_ID, \
+from proxky.configuration.config import CONFIG_PATH_ID_FILE, CONFIG_FRONT_ID, CONFIG_BACK_ID, CONFIG_PRINT_FRONT_ID, \
     CONFIG_PRINT_BACK_ID
-from proxky.main.configuration.variables import Paths, Id_Names, Ids
+from proxky.configuration.variables import Paths, Id_Names, Ids
 
 
 def generate_ids() -> None:

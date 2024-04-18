@@ -1,15 +1,13 @@
 import functools
 import operator
-import os.path
 
 from win32com import client
 
-from proxky.main.configuration.config import CONFIG_INDESIGN_ID
-from proxky.main.configuration.variables import Paths, Fonts, RESIZE_INFORMATION
-from proxky.main.data.card import Card
-from proxky.main.misc.enumerations import InfoMode
-from proxky.main.misc.logging import get_logger, format_message_cardname
-from proxky.main.misc.mtg import get_clean_name
+from proxky.configuration.config import CONFIG_INDESIGN_ID
+from proxky.configuration.variables import Paths, Fonts, RESIZE_INFORMATION
+from proxky.data.card import Card
+from proxky.misc.logging import get_logger, format_message_cardname
+from proxky.misc.mtg import get_clean_name
 
 LOGGER = get_logger()
 

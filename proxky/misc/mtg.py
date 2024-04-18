@@ -1,6 +1,6 @@
 from enum import Enum
 
-from proxky.main.configuration.variables import Magic
+from proxky.configuration.variables import Magic
 
 
 class Type(Enum):

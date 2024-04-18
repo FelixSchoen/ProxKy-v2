@@ -1,10 +1,10 @@
 import argparse
 from pathlib import Path
 
-from proxky.main.handler.indesign_handler import InDesignHandler
-from proxky.main.misc.enumerations import InfoMode
-from proxky.main.misc.id_generator import generate_ids
-from proxky.main.misc.logging import get_logger
+from proxky.handler.indesign_handler import InDesignHandler
+from proxky.misc.enumerations import InfoMode
+from proxky.misc.id_generator import generate_ids
+from proxky.misc.logging import get_logger
 from proxky.main.pipeline import parse_card_list, process_card, process_print
 
 LOGGER = get_logger()

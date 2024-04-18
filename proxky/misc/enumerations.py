@@ -1,6 +1,6 @@
 import enum
 
-from proxky.main.configuration.variables import Colors
+from proxky.configuration.variables import Colors
 
 
 class InfoMode(enum.Enum):
